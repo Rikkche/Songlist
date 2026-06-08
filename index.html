@@ -3,91 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的專屬歌單 🎤</title>
+    <title>Songlist</title>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); min-height: 100vh; margin: 0; padding: 30px 20px; color: #333; }
-        .container { max-width: 700px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #4a148c; font-size: 2.2rem; margin-bottom: 10px; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 1rem; }
-        .search-box { width: 100%; padding: 12px 20px; font-size: 16px; border: 2px solid #b39ddb; border-radius: 30px; box-sizing: border-box; margin-bottom: 25px; outline: none; transition: 0.3s; }
-        .search-box:focus { border-color: #7b1fa2; box-shadow: 0 0 8px rgba(123, 31, 162, 0.2); }
-        .song-list { display: grid; gap: 15px; }
-        .song-card { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-left: 5px solid #7b1fa2; display: flex; justify-content: space-between; align-items: center; transition: transform 0.2s; }
-        .song-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-        .song-info h3 { margin: 0 0 5px 0; color: #222; font-size: 1.2rem; }
-        .song-info p { margin: 0; color: #666; font-size: 0.95rem; }
-        .song-meta { text-align: right; }
-        .rating { color: #ffca28; font-size: 0.9rem; margin-bottom: 5px; }
-        .note { font-size: 0.8rem; color: #999; font-style: italic; }
-        .no-result { text-align: center; color: #999; padding: 20px; }
-        .error-msg { color: #e74c3c; text-align: center; padding: 20px; }
+        /* 1. 全域設定與藍綠紅漸層背景 */
+        body { 
+            margin: 0; 
+            padding: 40px 20px; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 50%, #f85032 100%);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        /* 2. 主容器 */
+        .container { 
+            max-width: 750px; 
+            margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.96); 
+            padding: 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+        }
+
+        /* 3. 搜尋框設計 (極簡無符號) */
+        .search-box { 
+            width: 100%; 
+            padding: 12px 16px; 
+            font-size: 16px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            margin-bottom: 30px; 
+            outline: none; 
+            transition: border-color 0.2s; 
+            color: #1e293b;
+        }
+        .search-box:focus { 
+            border-color: #3a7bd5; 
+        }
+
+        /* 4. 歌曲列表與卡片 */
+        .song-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
+        .song-card { 
+            background: #ffffff; 
+            padding: 16px 20px; 
+            border-radius: 6px; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); 
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 5. 第一行：語言標籤 + 歌名 + 歌手 */
+        .song-main-info { 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* 6. 獨立的語言標籤框 (符合 YMCK 與深綠規範) */
+        .tag { 
+            display: inline-block;
+            padding: 4px 10px; 
+            border-radius: 4px; 
+            font-size: 13px; 
+            font-weight: bold; 
+            color: #ffffff; 
+            text-align: center;
+            min-width: 40px;
+        }
+        .tag-日文 { background-color: #f1c40f; color: #000000; } /* Y */
+        .tag-英文 { background-color: #e91e63; } /* M */
+        .tag-中文 { background-color: #00bcd4; } /* C */
+        .tag-台語 { background-color: #1b5e20; } /* 深綠 */
+        .tag-其他 { background-color: #000000; } /* K */
+
+        /* 歌名與歌手樣式 */
+        .song-title { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: #0f172a;
+        }
+        .song-author { 
+            font-size: 16px; 
+            color: #475569; 
+            margin-left: 4px;
+        }
+
+        /* 7. 第二行：下方備註 (較小灰色字) */
+        .song-note { 
+            font-size: 13px; 
+            color: #94a3b8; 
+            margin-top: 8px; 
+            padding-top: 6px;
+            border-top: 1px dashed #f1f5f9;
+        }
+
+        /* 狀態提示文字 */
+        .status-msg { 
+            text-align: center; 
+            color: #64748b; 
+            padding: 30px; 
+            font-size: 16px; 
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🎤 我的專屬歌單</h1>
-    <div class="subtitle">歡迎點歌！這些都是我會唱的歌曲唷 ✨</div>
-    
-    <input type="text" id="searchInp" class="search-box" placeholder="🔍 輸入關鍵字搜尋歌名或原唱..." oninput="filterSongs()">
+    <input type="text" id="searchInp" class="search-box" placeholder="搜尋歌名、原唱或語言..." oninput="filterSongs()">
 
     <div id="userSongList" class="song-list">
-        <div class="no-result">歌單載入中...</div>
+        <div class="status-msg">歌單載入中...</div>
     </div>
 </div>
 
 <script>
-    let allSongs = []; // 儲存從 JSON 讀取到的所有歌曲
+    let allSongs = []; // 儲存從 JSON 讀取的原始資料
 
-    // 從同目錄下的 songs.json 抓取資料
+    // 異步讀取 songs.json
     async function loadSongs() {
         try {
-            // 加入時間戳記防止瀏覽器快取舊資料
-            const response = await fetch(`songs.json?t=${new Date().getTime()}`);
-            if (!response.ok) throw new Error('無法讀取歌單資料');
+            const response = await fetch(`songs.json?t=${Date.now()}`);
+            if (!response.ok) throw new Error();
             allSongs = await response.json();
-            renderUserSongs(allSongs);
+            renderSongs(allSongs);
         } catch (error) {
-            document.getElementById('userSongList').innerHTML = `<div class="error-msg">❌ 載入歌單失敗，請確認 songs.json 是否存在或格式正確。</div>`;
-            console.error(error);
+            document.getElementById('userSongList').innerHTML = '<div class="status-msg" style="color: #ef4444;">無法載入歌單，請確認 JSON 檔案與格式。</div>';
         }
     }
 
-    function renderUserSongs(songsToRender) {
+    // 渲染歌曲卡片到畫面上
+    function renderSongs(songsToRender) {
         const listContainer = document.getElementById('userSongList');
         listContainer.innerHTML = '';
 
         if (songsToRender.length === 0) {
-            listContainer.innerHTML = '<div class="no-result">沒有找到相關歌曲 📝</div>';
+            listContainer.innerHTML = '<div class="status-msg">未找到符合的歌曲</div>';
             return;
         }
 
         songsToRender.forEach(song => {
             const card = document.createElement('div');
             card.className = 'song-card';
+            
+            // 判斷是否有備註，若有才渲染備註區塊
+            const noteHTML = song.note ? `<div class="song-note">${song.note}</div>` : '';
+
             card.innerHTML = `
-                <div class="song-info">
-                    <h3>${song.title}</h3>
-                    <p>🎤 原唱：${song.artist}</p>
+                <div class="song-main-info">
+                    <span class="tag tag-${song.lang}">${song.lang}</span>
+                    <span class="song-title">${song.title}</span>
+                    <span class="song-author">${song.author}</span>
                 </div>
-                <div class="song-meta">
-                    <div class="rating">${song.rating}</div>
-                    <div class="note">${song.note ? song.note : ''}</div>
-                </div>
+                ${noteHTML}
             `;
             listContainer.appendChild(card);
         });
     }
 
+    // 搜尋過濾功能（支援歌名、作者、以及輸入語言篩選）
     function filterSongs() {
-        const searchTerm = document.getElementById('searchInp').value.toLowerCase();
+        const searchTerm = document.getElementById('searchInp').value.toLowerCase().trim();
         const filtered = allSongs.filter(song => 
             song.title.toLowerCase().includes(searchTerm) || 
-            song.artist.toLowerCase().includes(searchTerm)
+            song.author.toLowerCase().includes(searchTerm) ||
+            song.lang.toLowerCase().includes(searchTerm)
         );
-        renderUserSongs(filtered);
+        renderSongs(filtered);
     }
 
+    // 初始化載入
     window.onload = loadSongs;
 </script>
 </body>
