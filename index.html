@@ -25,20 +25,37 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
         }
 
-        /* 3. 搜尋框設計 (極簡無符號) */
+        /* 3. 工具列佈局 (搜尋框 + 篩選選單並排) */
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
         .search-box { 
-            width: 100%; 
+            flex: 2; /* 讓搜尋框佔據較多空間 */
             padding: 12px 16px; 
             font-size: 16px; 
             border: 1px solid #cbd5e1; 
             border-radius: 4px; 
             box-sizing: border-box; 
-            margin-bottom: 30px; 
             outline: none; 
             transition: border-color 0.2s; 
             color: #1e293b;
         }
-        .search-box:focus { 
+        .filter-select {
+            flex: 1; /* 篩選選單佔據較小空間 */
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            box-sizing: border-box;
+            outline: none;
+            background-color: #ffffff;
+            color: #1e293b;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus, .filter-select:focus { 
             border-color: #3a7bd5; 
         }
 
@@ -64,7 +81,7 @@
             gap: 12px;
         }
 
-        /* 6. 獨立的語言標籤框 (符合 YMCK 與深綠規範) */
+        /* 6. 獨立的語言標籤框 */
         .tag { 
             display: inline-block;
             padding: 4px 10px; 
@@ -81,7 +98,6 @@
         .tag-台語 { background-color: #1b5e20; } /* 深綠 */
         .tag-其他 { background-color: #000000; } /* K */
 
-        /* 歌名與歌手樣式 */
         .song-title { 
             font-size: 18px; 
             font-weight: 700; 
@@ -114,70 +130,14 @@
 <body>
 
 <div class="container">
-    <input type="text" id="searchInp" class="search-box" placeholder="搜尋歌名、原唱或語言..." oninput="filterSongs()">
-
-    <div id="userSongList" class="song-list">
-        <div class="status-msg">歌單載入中...</div>
+    <div class="toolbar">
+        <input type="text" id="searchInp" class="search-box" placeholder="搜尋歌名或原唱..." oninput="filterSongs()">
+        <select id="langFilter" class="filter-select" onchange="filterSongs()">
+            <option value="全部">全部語言</option>
+            <option value="日文">日文</option>
+            <option value="英文">英文</option>
+            <option value="中文">中文</option>
+            <option value="台語">台語</option>
+            <option value="其他">其他</option>
+        </select>
     </div>
-</div>
-
-<script>
-    let allSongs = []; // 儲存從 JSON 讀取的原始資料
-
-    // 異步讀取 songs.json
-    async function loadSongs() {
-        try {
-            const response = await fetch(`songs.json?t=${Date.now()}`);
-            if (!response.ok) throw new Error();
-            allSongs = await response.json();
-            renderSongs(allSongs);
-        } catch (error) {
-            document.getElementById('userSongList').innerHTML = '<div class="status-msg" style="color: #ef4444;">無法載入歌單，請確認 JSON 檔案與格式。</div>';
-        }
-    }
-
-    // 渲染歌曲卡片到畫面上
-    function renderSongs(songsToRender) {
-        const listContainer = document.getElementById('userSongList');
-        listContainer.innerHTML = '';
-
-        if (songsToRender.length === 0) {
-            listContainer.innerHTML = '<div class="status-msg">未找到符合的歌曲</div>';
-            return;
-        }
-
-        songsToRender.forEach(song => {
-            const card = document.createElement('div');
-            card.className = 'song-card';
-            
-            // 判斷是否有備註，若有才渲染備註區塊
-            const noteHTML = song.note ? `<div class="song-note">${song.note}</div>` : '';
-
-            card.innerHTML = `
-                <div class="song-main-info">
-                    <span class="tag tag-${song.lang}">${song.lang}</span>
-                    <span class="song-title">${song.title}</span>
-                    <span class="song-author">${song.author}</span>
-                </div>
-                ${noteHTML}
-            `;
-            listContainer.appendChild(card);
-        });
-    }
-
-    // 搜尋過濾功能（支援歌名、作者、以及輸入語言篩選）
-    function filterSongs() {
-        const searchTerm = document.getElementById('searchInp').value.toLowerCase().trim();
-        const filtered = allSongs.filter(song => 
-            song.title.toLowerCase().includes(searchTerm) || 
-            song.author.toLowerCase().includes(searchTerm) ||
-            song.lang.toLowerCase().includes(searchTerm)
-        );
-        renderSongs(filtered);
-    }
-
-    // 初始化載入
-    window.onload = loadSongs;
-</script>
-</body>
-</html>
