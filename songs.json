@@ -1,14 +1,14 @@
-[
+[[
     {
+        "lang": "日文",
         "title": "Lemon",
-        "artist": "米津玄師",
-        "rating": "⭐⭐⭐⭐⭐",
+        "author": "米津玄師",
         "note": ""
     },
     {
-        "title": "1562",
-        "artist": "452745274",
-        "rating": "⭐⭐⭐⭐⭐",
-        "note": "2424245"
+        "lang": "英文",
+        "title": "Stay",
+        "author": "Kustin bber",
+        "note": "sadndhaoshoasd"
     }
-]
+]]
