@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Songlist</title>
     <style>
-        /* 1. 全域設定與藍綠紅漸層背景 */
         body { 
             margin: 0; 
             padding: 40px 20px; 
@@ -15,7 +14,6 @@
             color: #1e293b;
         }
 
-        /* 2. 主容器 */
         .container { 
             max-width: 750px; 
             margin: 0 auto; 
@@ -25,14 +23,13 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
         }
 
-        /* 3. 工具列佈局 (搜尋框 + 篩選選單並排) */
         .toolbar {
             display: flex;
             gap: 12px;
             margin-bottom: 30px;
         }
         .search-box { 
-            flex: 2; /* 讓搜尋框佔據較多空間 */
+            flex: 2; 
             padding: 12px 16px; 
             font-size: 16px; 
             border: 1px solid #cbd5e1; 
@@ -43,7 +40,7 @@
             color: #1e293b;
         }
         .filter-select {
-            flex: 1; /* 篩選選單佔據較小空間 */
+            flex: 1; 
             padding: 12px 16px;
             font-size: 16px;
             border: 1px solid #cbd5e1;
@@ -59,7 +56,6 @@
             border-color: #3a7bd5; 
         }
 
-        /* 4. 歌曲列表與卡片 */
         .song-list { 
             display: flex; 
             flex-direction: column; 
@@ -73,7 +69,6 @@
             border: 1px solid #e2e8f0;
         }
 
-        /* 5. 第一行：語言標籤 + 歌名 + 歌手 */
         .song-main-info { 
             display: flex; 
             align-items: center; 
@@ -81,7 +76,6 @@
             gap: 12px;
         }
 
-        /* 6. 獨立的語言標籤框 */
         .tag { 
             display: inline-block;
             padding: 4px 10px; 
@@ -92,11 +86,11 @@
             text-align: center;
             min-width: 40px;
         }
-        .tag-日文 { background-color: #f1c40f; color: #000000; } /* Y */
-        .tag-英文 { background-color: #e91e63; } /* M */
-        .tag-中文 { background-color: #00bcd4; } /* C */
-        .tag-台語 { background-color: #1b5e20; } /* 深綠 */
-        .tag-其他 { background-color: #000000; } /* K */
+        .tag-日文 { background-color: #f1c40f; color: #000000; } 
+        .tag-英文 { background-color: #e91e63; } 
+        .tag-中文 { background-color: #00bcd4; } 
+        .tag-台語 { background-color: #1b5e20; } 
+        .tag-其他 { background-color: #000000; } 
 
         .song-title { 
             font-size: 18px; 
@@ -109,7 +103,6 @@
             margin-left: 4px;
         }
 
-        /* 7. 第二行：下方備註 (較小灰色字) */
         .song-note { 
             font-size: 13px; 
             color: #94a3b8; 
@@ -118,7 +111,6 @@
             border-top: 1px dashed #f1f5f9;
         }
 
-        /* 狀態提示文字 */
         .status-msg { 
             text-align: center; 
             color: #64748b; 
@@ -141,3 +133,74 @@
             <option value="其他">其他</option>
         </select>
     </div>
+
+    <div id="userSongList" class="song-list">
+        <div class="status-msg">歌單載入中...</div>
+    </div>
+</div>
+
+<script>
+    let allSongs = []; 
+
+    async function loadSongs() {
+        try {
+            // 使用隨機數加上時間戳記，確保絕對不抓舊的快取
+            const response = await fetch('songs.json?v=' + Math.random());
+            if (!response.ok) throw new Error();
+            allSongs = await response.json();
+            renderSongs(allSongs);
+        } catch (error) {
+            document.getElementById('userSongList').innerHTML = '<div class="status-msg" style="color: #ef4444;">無法載入歌單，請確認 JSON 檔案是否存在。</div>';
+        }
+    }
+
+    function renderSongs(songsToRender) {
+        const listContainer = document.getElementById('userSongList');
+        listContainer.innerHTML = '';
+
+        if (!songsToRender || songsToRender.length === 0) {
+            listContainer.innerHTML = '<div class="status-msg">未找到符合的歌曲</div>';
+            return;
+        }
+
+        songsToRender.forEach(song => {
+            const card = document.createElement('div');
+            card.className = 'song-card';
+            
+            const noteHTML = song.note ? `<div class="song-note">${song.note}</div>` : '';
+            // 同時防禦性讀取 author 或 artist 欄位
+            const displayAuthor = song.author || song.artist || '';
+
+            card.innerHTML = `
+                <div class="song-main-info">
+                    <span class="tag tag-${song.lang}">${song.lang}</span>
+                    <span class="song-title">${song.title}</span>
+                    <span class="song-author">${displayAuthor}</span>
+                </div>
+                ${noteHTML}
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    function filterSongs() {
+        const searchTerm = document.getElementById('searchInp').value.toLowerCase().trim();
+        const selectedLang = document.getElementById('langFilter').value;
+
+        const filtered = allSongs.filter(song => {
+            const displayAuthor = song.author || song.artist || '';
+            const matchesSearch = song.title.toLowerCase().includes(searchTerm) || 
+                                  displayAuthor.toLowerCase().includes(searchTerm);
+            
+            const matchesLang = (selectedLang === '全部') || (song.lang === selectedLang);
+            
+            return matchesSearch && matchesLang;
+        });
+
+        renderSongs(filtered);
+    }
+
+    window.onload = loadSongs;
+</script>
+</body>
+</html>
