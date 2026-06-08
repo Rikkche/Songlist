@@ -13,14 +13,38 @@
     },
     {
         "lang": "日文",
-        "title": "SEKAI NO OWARI",
-        "author": "RAIN",
+        "title": "逆光",
+        "author": "Ado",
+        "note": "Vaundy"
+    },
+    {
+        "lang": "日文",
+        "title": "RAIN",
+        "author": "SEKAI NO OWARI",
         "note": ""
     },
     {
         "lang": "日文",
-        "title": "逆光",
-        "author": "Ado",
-        "note": "Vaundy"
+        "title": "フォニイ",
+        "author": "ツミキ (可不)",
+        "note": "Vocaloid"
+    },
+    {
+        "lang": "英文",
+        "title": "Cups",
+        "author": "Anna Kendrick",
+        "note": "歌喉讚/Pitch Perfect"
+    },
+    {
+        "lang": "中文",
+        "title": "太陽與地球",
+        "author": "黃俊榮",
+        "note": "大家都聽盧廣仲的我們尊重一下原創"
+    },
+    {
+        "lang": "台語",
+        "title": "愛情恰恰",
+        "author": "陳小雲",
+        "note": ""
     }
 ]
