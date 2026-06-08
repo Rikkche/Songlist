@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的專屬歌單 🎤</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); min-height: 100vh; margin: 0; padding: 30px 20px; color: #333; }
+        .container { max-width: 700px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #4a148c; font-size: 2.2rem; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 1rem; }
+        .search-box { width: 100%; padding: 12px 20px; font-size: 16px; border: 2px solid #b39ddb; border-radius: 30px; box-sizing: border-box; margin-bottom: 25px; outline: none; transition: 0.3s; }
+        .search-box:focus { border-color: #7b1fa2; box-shadow: 0 0 8px rgba(123, 31, 162, 0.2); }
+        .song-list { display: grid; gap: 15px; }
+        .song-card { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-left: 5px solid #7b1fa2; display: flex; justify-content: space-between; align-items: center; transition: transform 0.2s; }
+        .song-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .song-info h3 { margin: 0 0 5px 0; color: #222; font-size: 1.2rem; }
+        .song-info p { margin: 0; color: #666; font-size: 0.95rem; }
+        .song-meta { text-align: right; }
+        .rating { color: #ffca28; font-size: 0.9rem; margin-bottom: 5px; }
+        .note { font-size: 0.8rem; color: #999; font-style: italic; }
+        .no-result { text-align: center; color: #999; padding: 20px; }
+        .error-msg { color: #e74c3c; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎤 我的專屬歌單</h1>
+    <div class="subtitle">歡迎點歌！這些都是我會唱的歌曲唷 ✨</div>
+    
+    <input type="text" id="searchInp" class="search-box" placeholder="🔍 輸入關鍵字搜尋歌名或原唱..." oninput="filterSongs()">
+
+    <div id="userSongList" class="song-list">
+        <div class="no-result">歌單載入中...</div>
+    </div>
+</div>
+
+<script>
+    let allSongs = []; // 儲存從 JSON 讀取到的所有歌曲
+
+    // 從同目錄下的 songs.json 抓取資料
+    async function loadSongs() {
+        try {
+            // 加入時間戳記防止瀏覽器快取舊資料
+            const response = await fetch(`songs.json?t=${new Date().getTime()}`);
+            if (!response.ok) throw new Error('無法讀取歌單資料');
+            allSongs = await response.json();
+            renderUserSongs(allSongs);
+        } catch (error) {
+            document.getElementById('userSongList').innerHTML = `<div class="error-msg">❌ 載入歌單失敗，請確認 songs.json 是否存在或格式正確。</div>`;
+            console.error(error);
+        }
+    }
+
+    function renderUserSongs(songsToRender) {
+        const listContainer = document.getElementById('userSongList');
+        listContainer.innerHTML = '';
+
+        if (songsToRender.length === 0) {
+            listContainer.innerHTML = '<div class="no-result">沒有找到相關歌曲 📝</div>';
+            return;
+        }
+
+        songsToRender.forEach(song => {
+            const card = document.createElement('div');
+            card.className = 'song-card';
+            card.innerHTML = `
+                <div class="song-info">
+                    <h3>${song.title}</h3>
+                    <p>🎤 原唱：${song.artist}</p>
+                </div>
+                <div class="song-meta">
+                    <div class="rating">${song.rating}</div>
+                    <div class="note">${song.note ? song.note : ''}</div>
+                </div>
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    function filterSongs() {
+        const searchTerm = document.getElementById('searchInp').value.toLowerCase();
+        const filtered = allSongs.filter(song => 
+            song.title.toLowerCase().includes(searchTerm) || 
+            song.artist.toLowerCase().includes(searchTerm)
+        );
+        renderUserSongs(filtered);
+    }
+
+    window.onload = loadSongs;
+</script>
+</body>
+</html>
