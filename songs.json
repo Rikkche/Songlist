@@ -3,48 +3,68 @@
         "lang": "日文",
         "title": "Lemon",
         "author": "米津玄師",
-        "note": ""
+        "note": "",
+        "tags": []
     },
     {
         "lang": "日文",
         "title": "私は最強",
         "author": "Ado",
-        "note": "Mrs.Green Apple"
+        "note": "Mrs.Green Apple",
+        "tags": []
     },
     {
         "lang": "日文",
         "title": "逆光",
         "author": "Ado",
-        "note": "Vaundy"
+        "note": "Vaundy",
+        "tags": []
     },
     {
         "lang": "日文",
         "title": "RAIN",
         "author": "SEKAI NO OWARI",
-        "note": ""
+        "note": "",
+        "tags": []
     },
     {
         "lang": "日文",
         "title": "フォニイ",
         "author": "ツミキ (可不)",
-        "note": "Vocaloid"
+        "note": "Vocaloid",
+        "tags": []
     },
     {
         "lang": "英文",
         "title": "Cups",
         "author": "Anna Kendrick",
-        "note": "歌喉讚/Pitch Perfect"
+        "note": "歌喉讚/Pitch Perfect",
+        "tags": []
     },
     {
         "lang": "中文",
         "title": "太陽與地球",
         "author": "黃俊榮",
-        "note": "大家都聽盧廣仲的我們尊重一下原創"
+        "note": "大家都聽盧廣仲的我們尊重一下原創",
+        "tags": []
     },
     {
         "lang": "台語",
         "title": "愛情恰恰",
         "author": "陳小雲",
-        "note": ""
+        "note": "",
+        "tags": []
+    },
+    {
+        "lang": "日文",
+        "title": "フォニイ",
+        "author": "ツミキ (可不)",
+        "note": "",
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39d575"
+            }
+        ]
     }
 ]
