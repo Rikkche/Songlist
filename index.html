@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>生物歌單列表</title>
     <style>
-        /* 1. 全域設定與藍綠紅漸層背景 */
         body { 
             margin: 0; 
             padding: 40px 20px; 
@@ -15,7 +14,6 @@
             color: #1e293b;
         }
 
-        /* 2. 主容器 */
         .container { 
             max-width: 750px; 
             margin: 0 auto; 
@@ -25,7 +23,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
         }
 
-        /* 3. 主標題文字 (大器、無表情符號) */
         .main-title {
             font-size: 28px;
             font-weight: 700;
@@ -38,14 +35,15 @@
             line-height: 1.2;
         }
 
-        /* 4. 工具列佈局 (搜尋框 + 篩選選單並排) */
+        /* 工具列：搜尋框佔據整行、下方放置兩個並排的篩選選單 */
         .toolbar {
             display: flex;
+            flex-direction: column;
             gap: 12px;
             margin-bottom: 30px;
         }
         .search-box { 
-            flex: 2; 
+            width: 100%;
             padding: 12px 16px; 
             font-size: 16px; 
             border: 1px solid #cbd5e1; 
@@ -54,6 +52,10 @@
             outline: none; 
             transition: border-color 0.2s; 
             color: #1e293b;
+        }
+        .filter-group {
+            display: flex;
+            gap: 12px;
         }
         .filter-select {
             flex: 1; 
@@ -72,7 +74,6 @@
             border-color: #3a7bd5; 
         }
 
-        /* 5. 歌曲列表與卡片 */
         .song-list { 
             display: flex; 
             flex-direction: column; 
@@ -86,15 +87,14 @@
             border: 1px solid #e2e8f0;
         }
 
-        /* 第一行：語言標籤 + 歌名 + 歌手 */
         .song-main-info { 
             display: flex; 
             align-items: center; 
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
         }
 
-        /* 獨立的語言標籤框 */
+        /* 語言固定 Tag */
         .tag { 
             display: inline-block;
             padding: 4px 10px; 
@@ -111,6 +111,16 @@
         .tag-台語 { background-color: #1b5e20; } 
         .tag-其他 { background-color: #000000; } 
 
+        /* 自訂動態標籤樣式 */
+        .custom-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
         .song-title { 
             font-size: 18px; 
             font-weight: 700; 
@@ -122,7 +132,6 @@
             margin-left: 4px;
         }
 
-        /* 第二行：下方備註 (較小灰色字) */
         .song-note { 
             font-size: 13px; 
             color: #94a3b8; 
@@ -131,7 +140,6 @@
             border-top: 1px dashed #f1f5f9;
         }
 
-        /* 狀態提示文字 */
         .status-msg { 
             text-align: center; 
             color: #64748b; 
@@ -146,15 +154,20 @@
     <h1 class="main-title">生物歌單列表</h1>
 
     <div class="toolbar">
-        <input type="text" id="searchInp" class="search-box" placeholder="搜尋歌名或原唱..." oninput="filterSongs()">
-        <select id="langFilter" class="filter-select" onchange="filterSongs()">
-            <option value="全部">全部語言</option>
-            <option value="日文">日文</option>
-            <option value="英文">英文</option>
-            <option value="中文">中文</option>
-            <option value="台語">台語</option>
-            <option value="其他">其他</option>
-        </select>
+        <input type="text" id="searchInp" class="search-box" placeholder="搜尋歌名、原唱或標籤..." oninput="filterSongs()">
+        <div class="filter-group">
+            <select id="langFilter" class="filter-select" onchange="filterSongs()">
+                <option value="全部">全部語言</option>
+                <option value="日文">日文</option>
+                <option value="英文">英文</option>
+                <option value="中文">中文</option>
+                <option value="台語">台語</option>
+                <option value="其他">其他</option>
+            </select>
+            <select id="customTagFilter" class="filter-select" onchange="filterSongs()">
+                <option value="全部">全部標籤</option>
+            </select>
+        </div>
     </div>
 
     <div id="userSongList" class="song-list">
@@ -165,21 +178,21 @@
 <script>
     let allSongs = []; 
 
-    // 異步讀取 songs.json
     async function loadSongs() {
         try {
             const response = await fetch('songs.json?v=' + Math.random());
             if (!response.ok) throw new Error();
             const rawData = await response.json();
             
-            // 2. 核心排序邏輯：依據歌手名稱（中英文兼容排序）
+            // 歌手中英文排序邏輯
             allSongs = rawData.sort((a, b) => {
                 const authorA = a.author || a.artist || '';
                 const authorB = b.author || b.artist || '';
-                
-                // 使用 zh-TW 語系進行比對，英文自動按 A-Z、中文自動按筆畫排序
                 return authorA.localeCompare(authorB, 'zh-TW');
             });
+
+            // 根據歌曲資料動態生成「自訂標籤」下拉選單的選項
+            generateTagFilterOptions(allSongs);
 
             renderSongs(allSongs);
         } catch (error) {
@@ -187,7 +200,27 @@
         }
     }
 
-    // 渲染歌曲卡片到畫面上
+    // 提取所有歌曲裡出現過的標籤，填入第二個下拉選單
+    function generateTagFilterOptions(songs) {
+        const tagSelect = document.getElementById('customTagFilter');
+        const uniqueTagNames = new Set();
+
+        songs.forEach(song => {
+            if (song.tags && Array.isArray(song.tags)) {
+                song.tags.forEach(t => uniqueTagNames.add(t.name));
+            }
+        });
+
+        // 保留「全部標籤」，其餘清除重新生成
+        tagSelect.innerHTML = '<option value="全部">全部標籤</option>';
+        uniqueTagNames.forEach(tagName => {
+            const opt = document.createElement('option');
+            opt.value = tagName;
+            opt.innerText = tagName;
+            tagSelect.appendChild(opt);
+        });
+    }
+
     function renderSongs(songsToRender) {
         const listContainer = document.getElementById('userSongList');
         listContainer.innerHTML = '';
@@ -204,11 +237,20 @@
             const noteHTML = song.note ? `<div class="song-note">${song.note}</div>` : '';
             const displayAuthor = song.author || song.artist || '';
 
+            // 生成自訂動態標籤 HTML
+            let tagsHTML = '';
+            if(song.tags && Array.isArray(song.tags)) {
+                song.tags.forEach(t => {
+                    tagsHTML += `<span class="custom-badge" style="background-color: ${t.color}">${t.name}</span>`;
+                });
+            }
+
             card.innerHTML = `
                 <div class="song-main-info">
                     <span class="tag tag-${song.lang}">${song.lang}</span>
                     <span class="song-title">${song.title}</span>
                     <span class="song-author">${displayAuthor}</span>
+                    ${tagsHTML}
                 </div>
                 ${noteHTML}
             `;
@@ -216,25 +258,37 @@
         });
     }
 
-    // 同時結合「關鍵字搜尋」與「語言下拉選單」的過濾功能
+    // 三重連動過濾：關鍵字 + 語言選單 + 自訂標籤選單
     function filterSongs() {
         const searchTerm = document.getElementById('searchInp').value.toLowerCase().trim();
         const selectedLang = document.getElementById('langFilter').value;
+        const selectedTag = document.getElementById('customTagFilter').value;
 
         const filtered = allSongs.filter(song => {
             const displayAuthor = song.author || song.artist || '';
-            const matchesSearch = song.title.toLowerCase().includes(searchTerm) || 
-                                  displayAuthor.toLowerCase().includes(searchTerm);
             
+            // 檢查歌曲本身的標籤名稱是否包含搜尋關鍵字
+            const hasMatchingTagKeyword = song.tags && Array.isArray(song.tags) && 
+                song.tags.some(t => t.name.toLowerCase().includes(searchTerm));
+
+            // 1. 搜尋比對：歌名、作者、或是標籤名稱符合
+            const matchesSearch = song.title.toLowerCase().includes(searchTerm) || 
+                                  displayAuthor.toLowerCase().includes(searchTerm) ||
+                                  hasMatchingTagKeyword;
+            
+            // 2. 語言比對
             const matchesLang = (selectedLang === '全部') || (song.lang === selectedLang);
             
-            return matchesSearch && matchesLang;
+            // 3. 自訂標籤比對
+            const matchesTag = (selectedTag === '全部') || 
+                (song.tags && Array.isArray(song.tags) && song.tags.some(t => t.name === selectedTag));
+            
+            return matchesSearch && matchesLang && matchesTag;
         });
 
         renderSongs(filtered);
     }
 
-    // 初始化載入
     window.onload = loadSongs;
 </script>
 </body>
