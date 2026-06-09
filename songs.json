@@ -7,30 +7,58 @@
         "langs": [
             "日文"
         ],
-        "notes": []
+        "notes": [],
+        "tags": [
+            {
+                "name": "連續劇/影集",
+                "color": "#84cc16"
+            }
+        ]
     },
     {
         "lang": "日文",
         "title": "私は最強",
         "author": "Ado",
-        "note": "Mrs.Green Apple",
+        "note": "Mrs.Green Apple, 高難度",
         "langs": [
             "日文"
         ],
         "notes": [
-            "Mrs.Green Apple"
+            "Mrs.Green Apple",
+            "高難度"
+        ],
+        "tags": [
+            {
+                "name": "電影",
+                "color": "#8b5cf6"
+            },
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            }
         ]
     },
     {
         "lang": "日文",
         "title": "逆光",
         "author": "Ado",
-        "note": "Vaundy",
+        "note": "Vaundy, 高難度",
         "langs": [
             "日文"
         ],
         "notes": [
-            "Vaundy"
+            "Vaundy",
+            "高難度"
+        ],
+        "tags": [
+            {
+                "name": "電影",
+                "color": "#8b5cf6"
+            },
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            }
         ]
     },
     {
@@ -39,10 +67,19 @@
         "author": "SEKAI NO OWARI",
         "note": "",
         "langs": [
-            "日文",
-            "韓文"
+            "日文"
         ],
-        "notes": []
+        "notes": [],
+        "tags": [
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            },
+            {
+                "name": "電影",
+                "color": "#8b5cf6"
+            }
+        ]
     },
     {
         "lang": "日文",
@@ -54,6 +91,12 @@
         ],
         "notes": [
             "Vocaloid"
+        ],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
         ]
     },
     {
@@ -66,6 +109,12 @@
         ],
         "notes": [
             "歌喉讚/Pitch Perfect"
+        ],
+        "tags": [
+            {
+                "name": "電影",
+                "color": "#8b5cf6"
+            }
         ]
     },
     {
@@ -91,28 +140,22 @@
         "notes": []
     },
     {
-        "lang": "日文",
-        "title": "Legend of Mermaid",
-        "author": "珍珠美人魚",
-        "note": "",
-        "langs": [
-            "日文"
-        ],
-        "notes": []
-    },
-    {
         "langs": [
             "中文",
             "日文"
         ],
         "lang": "中文",
         "title": "七彩的微風",
-        "author": "珍珠美人魚",
-        "note": "他有日文版叫Legend of Mermaid, Legend of Mermaid",
+        "author": "真珠美人魚",
+        "note": "Legend of Mermaid",
         "notes": [
-            "他有日文版叫Legend of Mermaid",
             "Legend of Mermaid"
         ],
-        "tags": []
+        "tags": [
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            }
+        ]
     }
 ]
