@@ -1,5 +1,8 @@
 [
     {
+        "langs": [
+            "日文"
+        ],
         "lang": "日文",
         "title": "Lemon",
         "author": "米津玄師",
@@ -21,11 +24,19 @@
         "tags": []
     },
     {
+        "langs": [
+            "英文"
+        ],
         "lang": "英文",
         "title": "Cups",
         "author": "Anna Kendrick",
         "note": "歌喉讚/Pitch Perfect",
-        "tags": []
+        "tags": [
+            {
+                "name": "電影",
+                "color": "#7630f8"
+            }
+        ]
     },
     {
         "lang": "中文",
@@ -78,6 +89,26 @@
             {
                 "name": "電影",
                 "color": "#7630f8"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文",
+            "英文"
+        ],
+        "lang": "日文",
+        "title": "GETCHA!",
+        "author": "Giga/Kira",
+        "note": "",
+        "tags": [
+            {
+                "name": "合唱曲",
+                "color": "#673ab7"
+            },
+            {
+                "name": "Vocaloid",
+                "color": "#39d575"
             }
         ]
     }
