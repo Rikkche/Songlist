@@ -7,21 +7,55 @@
         "title": "Lemon",
         "author": "米津玄師",
         "note": "",
-        "tags": []
+        "tags": [
+            {
+                "name": "連續劇/影集",
+                "color": "#84cc16"
+            }
+        ],
+        "notes": []
     },
     {
         "lang": "日文",
         "title": "逆光",
         "author": "Ado",
         "note": "Vaundy",
-        "tags": []
+        "tags": [
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            },
+            {
+                "name": "電影",
+                "color": "#9b00ff"
+            }
+        ],
+        "langs": [
+            "日文"
+        ],
+        "notes": [
+            "Vaundy"
+        ]
     },
     {
         "lang": "日文",
         "title": "RAIN",
         "author": "SEKAI NO OWARI",
         "note": "",
-        "tags": []
+        "tags": [
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            },
+            {
+                "name": "電影",
+                "color": "#9b00ff"
+            }
+        ],
+        "langs": [
+            "日文"
+        ],
+        "notes": []
     },
     {
         "langs": [
@@ -34,8 +68,11 @@
         "tags": [
             {
                 "name": "電影",
-                "color": "#7630f8"
+                "color": "#9b00ff"
             }
+        ],
+        "notes": [
+            "歌喉讚/Pitch Perfect"
         ]
     },
     {
@@ -43,14 +80,24 @@
         "title": "太陽與地球",
         "author": "黃俊榮",
         "note": "大家都聽盧廣仲的我們尊重一下原創",
-        "tags": []
+        "tags": [],
+        "langs": [
+            "中文"
+        ],
+        "notes": [
+            "大家都聽盧廣仲的我們尊重一下原創"
+        ]
     },
     {
         "lang": "台語",
         "title": "愛情恰恰",
         "author": "陳小雲",
         "note": "",
-        "tags": []
+        "tags": [],
+        "langs": [
+            "台語"
+        ],
+        "notes": []
     },
     {
         "lang": "日文",
@@ -60,9 +107,13 @@
         "tags": [
             {
                 "name": "Vocaloid",
-                "color": "#39d575"
+                "color": "#39C5BB"
             }
-        ]
+        ],
+        "langs": [
+            "日文"
+        ],
+        "notes": []
     },
     {
         "lang": "日文",
@@ -71,10 +122,18 @@
         "note": "",
         "tags": [
             {
-                "name": "動漫畫",
-                "color": "#3048f8"
+                "name": "動/漫畫",
+                "color": "#f97316"
+            },
+            {
+                "name": "電影",
+                "color": "#9b00ff"
             }
-        ]
+        ],
+        "langs": [
+            "日文"
+        ],
+        "notes": []
     },
     {
         "lang": "日文",
@@ -83,19 +142,25 @@
         "note": "",
         "tags": [
             {
-                "name": "動漫畫",
-                "color": "#3048f8"
+                "name": "動/漫畫",
+                "color": "#f97316"
             },
             {
                 "name": "電影",
-                "color": "#7630f8"
+                "color": "#9b00ff"
             }
-        ]
+        ],
+        "langs": [
+            "日文"
+        ],
+        "notes": []
     },
     {
         "langs": [
             "日文",
-            "英文"
+            "英文",
+            "台語",
+            "韓文"
         ],
         "lang": "日文",
         "title": "GETCHA!",
@@ -103,13 +168,10 @@
         "note": "",
         "tags": [
             {
-                "name": "合唱曲",
-                "color": "#673ab7"
-            },
-            {
                 "name": "Vocaloid",
-                "color": "#39d575"
+                "color": "#39C5BB"
             }
-        ]
+        ],
+        "notes": []
     }
 ]
