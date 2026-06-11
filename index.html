@@ -2,204 +2,71 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>生物歌單系統 (前台展示)</title>
+    <title>生物歌單系統 (前台雙行完美版)</title>
     <style>
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background: #f1f5f9; margin: 0; padding: 40px 20px; color: #1e293b; 
         }
         .container { 
-            max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 40px; 
+            max-width: 1200px; margin: 0 auto; background: #ffffff; padding: 40px; 
             border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
         }
+        
         .header-section {
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 25px;
         }
         h1 { color: #0f172a; font-weight: 700; margin: 0; }
         
-        /* 推薦按鈕 */
+        /* 💡 推薦按鈕樣式 */
         .btn-recommend {
-            background: #8b5cf6; color: white; border: none; padding: 10px 18px;
+            background: #8b5cf6; color: white; border: none; padding: 12px 20px;
             border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;
             transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
         }
         .btn-recommend:hover { background: #7c3aed; transform: translateY(-1px); }
 
-        /* 彈出視窗樣式 (Modal) */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); display: flex; align-items: center;
-            justify-content: center; z-index: 1000; opacity: 0; visibility: hidden;
-            transition: all 0.25s ease;
+        /* 🔍 搜尋與篩選控制面板 */
+        .filter-box {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
+            padding: 15px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px;
         }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-window {
-            background: white; padding: 30px; border-radius: 12px; width: 100%;
-            max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            transform: translateY(-20px); transition: all 0.25s ease;
+        .filter-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .search-input { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
+        .search-input:focus { border-color: #3a7bd5; }
+        
+        .filter-btn {
+            background: #fff; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 20px;
+            font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s;
         }
-        .modal-overlay.active .modal-window { transform: translateY(0); }
-        .modal-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #0f172a; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #475569; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;
-            box-sizing: border-box; font-size: 14px; outline: none;
-        }
-        .form-group input:focus, .form-group textarea:focus { border-color: #8b5cf6; }
-        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-        .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-        .btn-submit { background: #8b5cf6; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .filter-btn:hover { background: #f1f5f9; }
+        .filter-btn.active { background: #3a7bd5; color: #fff; border-color: #3a7bd5; }
 
-        /* 歌單表格展示 */
-        .song-table { width: 100%; border-collapse: collapse; }
-        .song-table th, .song-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        .song-table th { background: #f8fafc; color: #64748b; }
-        .lang-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; margin-right: 4px; }
+        /* 🎵 歌單表格基本樣式 */
+        .song-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .song-table th { background: #f8fafc; color: #64748b; padding: 12px 15px; text-align: left; font-size: 14px; border-bottom: 2px solid #e2e8f0; }
+        .song-table td { padding: 16px 15px; border-bottom: 1px solid #e2e8f0; }
+        
+        /* 💥 兩行觀看核心核心排版 */
+        .song-main-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .song-title { font-size: 17px; font-weight: 700; color: #0f172a; }
+        
+        .song-sub-row { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; font-size: 13px; color: #64748b; }
+        .song-author { font-weight: 500; color: #334155; margin-right: 5px; }
+
+        /* 🎨 膠囊與徽章樣式 */
+        .table-lang-container, .table-tags-container, .table-note-tags { display: inline-flex; gap: 6px; align-items: center; }
+        .front-lang-badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #fff; }
         .lang-中文 { background: #00bcd4; } .lang-日文 { background: #f1c40f; color: #000; } .lang-英文 { background: #e91e63; }
         .lang-韓文 { background: #3f51b5; } .lang-台語 { background: #1b5e20; } .lang-其他 { background: #000000; }
-        .tag-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; margin-right: 4px; }
-        .note-badge { background: #64748b; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
-    </style>
-</head>
-<body>
 
-<div class="container">
-    <div class="header-section">
-        <h1>🎵 點歌單首頁</h1>
-        <button class="btn-recommend" onclick="openModal()">💡 推薦歌曲 / 許願</button>
-    </div>
+        .table-tag-badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: #fff; }
+        .note-badge { background: #64748b; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
 
-    <table class="song-table">
-        <thead>
-            <tr>
-                <th style="width: 20%">語言</th>
-                <th style="width: 30%">歌名</th>
-                <th style="width: 25%">原唱/作者</th>
-                <th style="width: 25%">標籤與備註</th>
-            </tr>
-        </thead>
-        <tbody id="frontSongList">
-            <tr><td colspan="4" style="text-align:center; color:#94a3b8;">歌單載入中...</td></tr>
-        </tbody>
-    </div>
-</div>
-
-<div class="modal-overlay" id="recommendModal">
-    <div class="modal-window">
-        <div class="modal-header">💡 推薦你心儀的歌曲</div>
-        <div class="form-group">
-            <label>歌曲名稱 *</label>
-            <input type="text" id="recTitle" placeholder="例如：怪物">
-        </div>
-        <div class="form-group">
-            <label>原唱 / 歌手 *</label>
-            <input type="text" id="recAuthor" placeholder="例如：YOASOBI">
-        </div>
-        <div class="form-group">
-            <label>推薦原因 / 想要對台主說的話 (選填)</label>
-            <textarea id="recNote" rows="3" placeholder="這首歌超好聽，希望能聽到生物唱！"></textarea>
-        </div>
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeModal()">取消</button>
-            <button class="btn-submit" onclick="submitRecommendation()">遞交推薦</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // GitHub 設定資訊 (與後台連動)
-    const _p1 = "ghp_K3OzrbmVry"; const _p2 = "n05Yp2Z3Bq88W"; const _p3 = "ayN3Ke03d6tZQ";
-    const GH_SETTINGS = { token: _p1 + _p2 + _p3, owner: "Rikkche", repo: "Songlist", path: "songs.json" };
-
-    // 彈出視窗控制
-    function openModal() { document.getElementById('recommendModal').classList.add('active'); }
-    function closeModal() {
-        document.getElementById('recommendModal').classList.remove('active');
-        document.getElementById('recTitle').value = '';
-        document.getElementById('recAuthor').value = '';
-        document.getElementById('recNote').value = '';
-    }
-
-    // 觀眾遞交點歌 ➔ 直接送到 GitHub Issues 變成你的後台清單
-    async function submitRecommendation() {
-        const title = document.getElementById('recTitle').value.trim();
-        const author = document.getElementById('recAuthor').value.trim();
-        const note = document.getElementById('recNote').value.trim();
-
-        if (!title || !author) { alert('請填寫歌名與作者喔！'); return; }
-
-        const issueTitle = `【歌曲推薦】${title} - ${author}`;
-        const issueBody = `### 🎵 觀眾推薦歌曲報告\n\n- **歌名：** ${title}\n- **原唱/作者：** ${author}\n- **備註/原因：** ${note || '無'}\n\n*提交時間：${new Date().toLocaleString()}*`;
-
-        try {
-            const url = `https://api.github.com/repos/${GH_SETTINGS.owner}/${GH_SETTINGS.repo}/issues`;
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Authorization": `token ${GH_SETTINGS.token}`,
-                    "Accept": "application/vnd.github.v3+json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ title: issueTitle, body: issueBody, labels: ["觀眾推薦"] })
-            });
-
-            if (res.ok) {
-                alert('🎉 推薦成功！生物已經收到你的精選歌曲囉！');
-                closeModal();
-            } else {
-                alert('遞交失敗，請稍後再試。');
-            }
-        } catch (error) {
-            alert('連線異常：' + error.message);
-        }
-    }
-
-    // 讀取並渲染歌單
-    async function loadSongs() {
-        const url = `https://raw.githubusercontent.com/${GH_SETTINGS.owner}/${GH_SETTINGS.repo}/main/${GH_SETTINGS.path}?t=${Date.now()}`;
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error();
-            const songs = await res.json();
-            const tbody = document.getElementById('frontSongList');
-            tbody.innerHTML = '';
-
-            if (songs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">目前歌單空空如也。</td></tr>';
-                return;
-            }
-
-            songs.forEach(song => {
-                const langs = song.langs || [song.lang || "中文"];
-                let langHTML = '';
-                langs.forEach(l => langHTML += `<span class="lang-badge lang-${l}">${l}</span>`);
-
-                let tagsHTML = '';
-                if (song.tags) {
-                    song.tags.forEach(t => tagsHTML += `<span class="tag-badge" style="background:${t.color}">${t.name}</span>`);
-                }
-
-                let notesHTML = '';
-                const notesArr = song.notes || (song.note ? song.note.split(',') : []);
-                notesArr.forEach(n => { if(n.trim()) notesHTML += `<span class="note-badge">${n.trim()}</span>`; });
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${langHTML}</td>
-                    <td><strong>${song.title}</strong></td>
-                    <td>${song.author}</td>
-                    <td>${tagsHTML} ${notesHTML}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        } catch (e) {
-            document.getElementById('frontSongList').innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">未能成功載入歌單，請確認線上 songs.json 是否存在。</td></tr>';
-        }
-    }
-
-    window.onload = loadSongs;
-</script>
-</body>
-</html>
+        /* 📌 許願燈箱彈出層 */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; z-index:
