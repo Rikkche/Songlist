@@ -2,6 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>生物歌單系統 (前台雙行完美版)</title>
     <style>
         body { 
@@ -17,7 +18,7 @@
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 25px;
         }
-        h1 { color: #0f172a; font-weight: 700; margin: 0; }
+        h1 { color: #0f172a; font-weight: 700; margin: 0; font-size: 24px; }
         
         /* 💡 推薦按鈕樣式 */
         .btn-recommend {
@@ -35,7 +36,7 @@
         }
         .filter-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
         .search-input { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
-        .search-input:focus { border-color: #3a7bd5; }
+        .search-input:focus { border-color: #3a7bd5; box-shadow: 0 0 0 3px rgba(58,123,213,0.15); }
         
         .filter-btn {
             background: #fff; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 20px;
@@ -44,20 +45,20 @@
         .filter-btn:hover { background: #f1f5f9; }
         .filter-btn.active { background: #3a7bd5; color: #fff; border-color: #3a7bd5; }
 
-        /* 🎵 歌單表格基本樣式 */
+        /* 🎵 歌單表格與雙行排版樣式 */
         .song-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .song-table th { background: #f8fafc; color: #64748b; padding: 12px 15px; text-align: left; font-size: 14px; border-bottom: 2px solid #e2e8f0; }
-        .song-table td { padding: 16px 15px; border-bottom: 1px solid #e2e8f0; }
+        .song-table td { padding: 18px 15px; border-bottom: 1px solid #e2e8f0; word-break: break-all; }
         
-        /* 💥 兩行觀看核心核心排版 */
-        .song-main-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-        .song-title { font-size: 17px; font-weight: 700; color: #0f172a; }
+        /* 💥 核心：兩行觀看排版 */
+        .song-main-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+        .song-title { font-size: 18px; font-weight: 700; color: #0f172a; }
         
-        .song-sub-row { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; font-size: 13px; color: #64748b; }
-        .song-author { font-weight: 500; color: #334155; margin-right: 5px; }
+        .song-sub-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px; color: #64748b; }
+        .song-author { font-weight: 500; color: #475569; margin-right: 8px; }
 
         /* 🎨 膠囊與徽章樣式 */
-        .table-lang-container, .table-tags-container, .table-note-tags { display: inline-flex; gap: 6px; align-items: center; }
+        .table-lang-container, .table-tags-container, .table-note-tags { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
         .front-lang-badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #fff; }
         .lang-中文 { background: #00bcd4; } .lang-日文 { background: #f1c40f; color: #000; } .lang-英文 { background: #e91e63; }
         .lang-韓文 { background: #3f51b5; } .lang-台語 { background: #1b5e20; } .lang-其他 { background: #000000; }
@@ -65,10 +66,10 @@
         .table-tag-badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: #fff; }
         .note-badge { background: #64748b; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
 
-        /* 📌 許願燈箱彈出層 */
+        /* 📌 許願燈箱彈出層 (毛玻璃高質感) */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(5px);
             display: flex; align-items: center; justify-content: center; z-index: 1000;
             opacity: 0; visibility: hidden; transition: all 0.25s ease;
         }
@@ -86,7 +87,7 @@
             width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px;
             box-sizing: border-box; font-size: 14px; outline: none;
         }
-        .form-group input:focus, .form-group textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+        .form-group input:focus, .form-group textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); }
         .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
         .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
         .btn-submit { background: #8b5cf6; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
@@ -103,7 +104,7 @@
     <div class="filter-box">
         <div class="filter-row">
             <span style="font-size:14px; font-weight:bold; color:#475569;">🔍 歌單搜尋：</span>
-            <input type="text" id="tableSearch" class="search-input" placeholder="輸入關鍵字（歌名、作者、標籤）即時搜尋過濾..." oninput="filterSongs()">
+            <input type="text" id="tableSearch" class="search-input" placeholder="輸入關鍵字（歌名、作者、標籤、備註）即時搜尋過濾..." oninput="filterSongs()">
         </div>
         <div class="filter-row" id="filterLanguageRow">
             <span style="font-size:13px; color:#64748b;">按語言篩選：</span>
@@ -244,7 +245,7 @@
             document.getElementById('songCount').innerText = globalSongsArray.length;
 
             if (globalSongsArray.length === 0) {
-                tbody.innerHTML = '<tr><td style="text-align:center; color:#94a3b8;">目前歌單空空如也。</td></tr>';
+                tbody.innerHTML = '<tr><td style="text-align:center; color:#94a3b8; padding:20px;">目前歌單空空如也。</td></tr>';
                 return;
             }
 
@@ -288,7 +289,7 @@
             });
 
         } catch (e) {
-            document.getElementById('frontSongList').innerHTML = '<tr><td style="text-align:center; color:red; font-weight:bold;">❌ 未能成功連線至歌單資料。</td></tr>';
+            document.getElementById('frontSongList').innerHTML = '<tr><td style="text-align:center; color:red; font-weight:bold; padding:20px;">❌ 未能成功連線至歌單資料。</td></tr>';
         }
     }
 
