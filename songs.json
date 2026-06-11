@@ -157,5 +157,133 @@
                 "color": "#f97316"
             }
         ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "妄想感傷代償聯盟",
+        "author": "DECO*27",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "おじゃま虫",
+        "author": "DECO*27",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "アニマル",
+        "author": "DECO*27",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "ヴァンパイア",
+        "author": "DECO*27",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "ヒバナ",
+        "author": "DECO*27",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "ゴーストルール",
+        "author": "DECO*27",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "サラマンダー",
+        "author": "DECO*27",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "デビルじゃないもん",
+        "author": "DECO*27",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
     }
 ]
