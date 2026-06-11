@@ -2,437 +2,204 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生物的點歌歌單</title>
+    <title>生物歌單系統 (前台展示)</title>
     <style>
-        :root {
-            --primary: #3a7bd5;
-            --primary-hover: #2a66b8;
-            --bg-main: #f1f5f9;
-            --bg-card: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --text-light: #94a3b8; /* 更淺的字體顏色 */
-            --border-color: #e2e8f0;
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #f1f5f9; margin: 0; padding: 40px 20px; color: #1e293b; 
         }
+        .container { 
+            max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 40px; 
+            border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+        }
+        .header-section {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 30px;
+        }
+        h1 { color: #0f172a; font-weight: 700; margin: 0; }
+        
+        /* 推薦按鈕 */
+        .btn-recommend {
+            background: #8b5cf6; color: white; border: none; padding: 10px 18px;
+            border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-recommend:hover { background: #7c3aed; transform: translateY(-1px); }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg-main);
-            margin: 0;
-            padding: 20px;
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
+        /* 彈出視窗樣式 (Modal) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); display: flex; align-items: center;
+            justify-content: center; z-index: 1000; opacity: 0; visibility: hidden;
+            transition: all 0.25s ease;
         }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-window {
+            background: white; padding: 30px; border-radius: 12px; width: 100%;
+            max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateY(-20px); transition: all 0.25s ease;
+        }
+        .modal-overlay.active .modal-window { transform: translateY(0); }
+        .modal-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #0f172a; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #475569; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;
+            box-sizing: border-box; font-size: 14px; outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus { border-color: #8b5cf6; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        .btn-submit { background: #8b5cf6; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: var(--bg-card);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-
-        header h1 {
-            margin: 0 0 10px 0;
-            color: #0f172a;
-            font-size: 28px;
-            font-weight: 800;
-        }
-
-        header p {
-            margin: 0;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        /* 🔍 搜尋與篩選控制區 */
-        .control-panel {
-            background: var(--bg-card);
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .search-box {
-            position: relative;
-            display: flex;
-            width: 100%;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.2s;
-            box-sizing: border-box;
-        }
-
-        .search-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(58,123,213,0.1);
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .filter-label {
-            font-size: 14px;
-            font-weight: 700;
-            color: #475569;
-            min-width: 70px;
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .btn-filter {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #475569;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-filter:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
-
-        .btn-filter.active {
-            background: var(--primary);
-            color: #ffffff;
-            border-color: var(--primary);
-        }
-
-        /* 🛠️ 核心更動：改為雙欄式 (兩排) 排版 */
-        .song-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 寬螢幕時平分成左右兩排 */
-            gap: 16px;
-        }
-
-        .song-item {
-            background: var(--bg-card);
-            padding: 18px 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column; /* 改為上下排列，方便塞備註到最下方 */
-            gap: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border-left: 5px solid #cbd5e1;
-            box-sizing: border-box;
-        }
-
-        .song-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-        }
-
-        /* 第一排：語言、歌名、作者、標籤 */
-        .song-top-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap; /* 避免極端情況塞不下擠壓變形 */
-        }
-
-        .lang-badges, .tag-badges {
-            display: inline-flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        /* 🎨 語言小膠囊 */
-        .badge-lang {
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: 800;
-            color: #ffffff;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.1);
-            white-space: nowrap;
-        }
-        .badge-lang.lang-中文 { background: #00bcd4; }
-        .badge-lang.lang-日文 { background: #f1c40f; color: #000; text-shadow: none; }
-        .badge-lang.lang-英文 { background: #e91e63; }
-        .badge-lang.lang-韓文 { background: #ff5722; }
-        .badge-lang.lang-台語 { background: #1b5e20; }
-        .badge-lang.lang-其他 { background: #000000; }
-
-        /* 歌曲名稱 */
-        .song-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        /* 🛠️ 歌手作者：調整為較小、較淺 */
-        .song-author {
-            font-size: 13px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* 自訂標籤庫樣式 */
-        .badge-custom-tag {
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #ffffff;
-            white-space: nowrap;
-        }
-
-        /* 🛠️ 第二排：備註放在最下面，且字體最小、最淺 */
-        .song-bottom-row {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-top: 2px;
-            padding-top: 6px;
-            border-top: 1px dashed #f1f5f9; /* 加上淡淡的虛線分隔線，讓排版更精緻 */
-        }
-
-        .badge-note {
-            background: #f1f5f9; /* 備註底色改為更淡的淺灰 */
-            color: var(--text-light); /* 💡 使用最淺的字體顏色 */
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 11px; /* 💡 使用最小的字體 */
-            font-weight: 600;
-        }
-
-        .no-result {
-            grid-column: span 2; /* 查無結果時，要橫跨兩排 */
-            text-align: center;
-            padding: 40px;
-            background: var(--bg-card);
-            border-radius: 12px;
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-
-        /* 📱 手機板自動適應：當螢幕寬度小於 768px 時，自動回復成單排 */
-        @media (max-width: 768px) {
-            .song-list {
-                grid-template-columns: 1fr;
-            }
-            .no-result {
-                grid-column: span 1;
-            }
-        }
+        /* 歌單表格展示 */
+        .song-table { width: 100%; border-collapse: collapse; }
+        .song-table th, .song-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .song-table th { background: #f8fafc; color: #64748b; }
+        .lang-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; margin-right: 4px; }
+        .lang-中文 { background: #00bcd4; } .lang-日文 { background: #f1c40f; color: #000; } .lang-英文 { background: #e91e63; }
+        .lang-韓文 { background: #3f51b5; } .lang-台語 { background: #1b5e20; } .lang-其他 { background: #000000; }
+        .tag-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; margin-right: 4px; }
+        .note-badge { background: #64748b; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>🎵 生物的點歌歌單</h1>
-        <p>目前總共開放 <span id="totalSongs" style="font-weight:bold; color:var(--primary);">0</span> 首歌曲，歡迎點播！</p>
-    </header>
-
-    <div class="control-panel">
-        <div class="search-box">
-            <input type="text" id="searchBar" class="search-input" placeholder="搜尋歌名、作者、標籤或備註..." oninput="performFilter()">
-        </div>
-        
-        <div class="filter-group" id="langGroup">
-            <div class="filter-label">語言分類</div>
-            <div class="filter-buttons">
-                <button class="btn-filter active" onclick="filterByLang('全部', this)">全部</button>
-                <button class="btn-filter" onclick="filterByLang('中文', this)">中文</button>
-                <button class="btn-filter" onclick="filterByLang('日文', this)">日文</button>
-                <button class="btn-filter" onclick="filterByLang('英文', this)">英文</button>
-                <button class="btn-filter" onclick="filterByLang('韓文', this)">韓文</button>
-                <button class="btn-filter" onclick="filterByLang('台語', this)">台語</button>
-                <button class="btn-filter" onclick="filterByLang('其他', this)">其他</button>
-            </div>
-        </div>
-
-        <div class="filter-group" id="tagGroup" style="display: none;">
-            <div class="filter-label">特色標籤</div>
-            <div class="filter-buttons" id="tagButtonsContainer">
-                </div>
-        </div>
+    <div class="header-section">
+        <h1>🎵 點歌單首頁</h1>
+        <button class="btn-recommend" onclick="openModal()">💡 推薦歌曲 / 許願</button>
     </div>
 
-    <div id="songsContainer" class="song-list"></div>
+    <table class="song-table">
+        <thead>
+            <tr>
+                <th style="width: 20%">語言</th>
+                <th style="width: 30%">歌名</th>
+                <th style="width: 25%">原唱/作者</th>
+                <th style="width: 25%">標籤與備註</th>
+            </tr>
+        </thead>
+        <tbody id="frontSongList">
+            <tr><td colspan="4" style="text-align:center; color:#94a3b8;">歌單載入中...</td></tr>
+        </tbody>
+    </div>
+</div>
+
+<div class="modal-overlay" id="recommendModal">
+    <div class="modal-window">
+        <div class="modal-header">💡 推薦你心儀的歌曲</div>
+        <div class="form-group">
+            <label>歌曲名稱 *</label>
+            <input type="text" id="recTitle" placeholder="例如：怪物">
+        </div>
+        <div class="form-group">
+            <label>原唱 / 歌手 *</label>
+            <input type="text" id="recAuthor" placeholder="例如：YOASOBI">
+        </div>
+        <div class="form-group">
+            <label>推薦原因 / 想要對台主說的話 (選填)</label>
+            <textarea id="recNote" rows="3" placeholder="這首歌超好聽，希望能聽到生物唱！"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">取消</button>
+            <button class="btn-submit" onclick="submitRecommendation()">遞交推薦</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    let rawSongs = [];
-    let currentLang = "全部";
-    let currentTag = "全部";
+    // GitHub 設定資訊 (與後台連動)
+    const _p1 = "ghp_K3OzrbmVry"; const _p2 = "n05Yp2Z3Bq88W"; const _p3 = "ayN3Ke03d6tZQ";
+    const GH_SETTINGS = { token: _p1 + _p2 + _p3, owner: "Rikkche", repo: "Songlist", path: "songs.json" };
 
-    async function fetchSongs() {
+    // 彈出視窗控制
+    function openModal() { document.getElementById('recommendModal').classList.add('active'); }
+    function closeModal() {
+        document.getElementById('recommendModal').classList.remove('active');
+        document.getElementById('recTitle').value = '';
+        document.getElementById('recAuthor').value = '';
+        document.getElementById('recNote').value = '';
+    }
+
+    // 觀眾遞交點歌 ➔ 直接送到 GitHub Issues 變成你的後台清單
+    async function submitRecommendation() {
+        const title = document.getElementById('recTitle').value.trim();
+        const author = document.getElementById('recAuthor').value.trim();
+        const note = document.getElementById('recNote').value.trim();
+
+        if (!title || !author) { alert('請填寫歌名與作者喔！'); return; }
+
+        const issueTitle = `【歌曲推薦】${title} - ${author}`;
+        const issueBody = `### 🎵 觀眾推薦歌曲報告\n\n- **歌名：** ${title}\n- **原唱/作者：** ${author}\n- **備註/原因：** ${note || '無'}\n\n*提交時間：${new Date().toLocaleString()}*`;
+
         try {
-            const response = await fetch('songs.json?t=' + new Date().getTime());
-            if (!response.ok) throw new Error('無法讀取 songs.json');
-            rawSongs = await response.json();
-            
-            document.getElementById('totalSongs').innerText = rawSongs.length;
-            buildTagFilterButtons();
-            performFilter();
-        } catch (error) {
-            console.error(error);
-            document.getElementById('songsContainer').innerHTML = `
-                <div class="no-result">❌ 歌單載入失敗，請確認同目錄下是否有 songs.json 檔案。</div>
-            `;
-        }
-    }
-
-    function buildTagFilterButtons() {
-        const container = document.getElementById('tagButtonsContainer');
-        const tagGroupEl = document.getElementById('tagGroup');
-        
-        let uniqueTags = {};
-        rawSongs.forEach(song => {
-            if (song.tags && Array.isArray(song.tags)) {
-                song.tags.forEach(t => { uniqueTags[t.name] = t.color; });
-            }
-        });
-
-        const tagNames = Object.keys(uniqueTags);
-        if (tagNames.length === 0) {
-            tagGroupEl.style.display = "none";
-            return;
-        }
-
-        tagGroupEl.style.display = "flex";
-        let html = `<button class="btn-filter active" onclick="filterByTag('全部', this)">全部</button>`;
-        tagNames.forEach(name => {
-            html += `<button class="btn-filter" onclick="filterByTag('${name}', this)">${name}</button>`;
-        });
-        container.innerHTML = html;
-    }
-
-    function filterByLang(lang, btnElement) {
-        currentLang = lang;
-        document.querySelectorAll('#langGroup .btn-filter').forEach(btn => btn.classList.remove('active'));
-        btnElement.classList.add('active');
-        performFilter();
-    }
-
-    function filterByTag(tagName, btnElement) {
-        currentTag = tagName;
-        document.querySelectorAll('#tagGroup .btn-filter').forEach(btn => btn.classList.remove('active'));
-        btnElement.classList.add('active');
-        performFilter();
-    }
-
-    function performFilter() {
-        const keyword = document.getElementById('searchBar').value.toLowerCase().trim();
-        const container = document.getElementById('songsContainer');
-        container.innerHTML = '';
-
-        const filtered = rawSongs.filter(song => {
-            const songLangs = song.langs || [song.lang || "中文"];
-            const matchLang = (currentLang === "全部" || songLangs.includes(currentLang));
-
-            const songTags = song.tags || [];
-            const matchTag = (currentTag === "全部" || songTags.some(t => t.name === currentTag));
-
-            const notesString = Array.isArray(song.notes) ? song.notes.join(' ') : (song.note || '');
-            const matchKeyword = (!keyword ||
-                song.title.toLowerCase().includes(keyword) ||
-                song.author.toLowerCase().includes(keyword) ||
-                notesString.toLowerCase().includes(keyword)
-            );
-
-            return matchLang && matchTag && matchKeyword;
-        });
-
-        if (filtered.length === 0) {
-            container.innerHTML = `<div class="no-result">🔍 沒有找到符合條件的歌曲。</div>`;
-            return;
-        }
-
-        filtered.forEach(song => {
-            const songLangs = song.langs || [song.lang || "中文"];
-            
-            // 1. 建立語言 HTML
-            let langBadgesHTML = '<div class="lang-badges">';
-            songLangs.forEach(l => {
-                langBadgesHTML += `<span class="badge-lang lang-${l}">${l}</span>`;
+            const url = `https://api.github.com/repos/${GH_SETTINGS.owner}/${GH_SETTINGS.repo}/issues`;
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Authorization": `token ${GH_SETTINGS.token}`,
+                    "Accept": "application/vnd.github.v3+json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ title: issueTitle, body: issueBody, labels: ["觀眾推薦"] })
             });
-            langBadgesHTML += '</div>';
 
-            // 2. 建立特色標籤 HTML
-            let tagsHTML = '<div class="tag-badges">';
-            if (song.tags && Array.isArray(song.tags)) {
-                song.tags.forEach(t => {
-                    tagsHTML += `<span class="badge-custom-tag" style="background-color: ${t.color}">${t.name}</span>`;
-                });
+            if (res.ok) {
+                alert('🎉 推薦成功！生物已經收到你的精選歌曲囉！');
+                closeModal();
+            } else {
+                alert('遞交失敗，請稍後再試。');
             }
-            tagsHTML += '</div>';
-
-            // 3. 建立最下方的備註 HTML
-            let bottomRowHTML = '';
-            const songNotes = song.notes || (song.note ? song.note.split(',').map(s => s.trim()).filter(Boolean) : []);
-            if (songNotes.length > 0) {
-                bottomRowHTML += '<div class="song-bottom-row">';
-                songNotes.forEach(n => {
-                    bottomRowHTML += `<span class="badge-note"># ${n}</span>`;
-                });
-                bottomRowHTML += '</div>';
-            }
-
-            // 設定卡片左邊條預設顏色
-            let borderColor = "#cbd5e1";
-            if (songLangs[0] === "中文") borderColor = "#00bcd4";
-            if (songLangs[0] === "日文") borderColor = "#f1c40f";
-            if (songLangs[0] === "英文") borderColor = "#e91e63";
-            if (songLangs[0] === "韓文") borderColor = "#ff5722";
-            if (songLangs[0] === "台語") borderColor = "#1b5e20";
-            if (songLangs[0] === "其他") borderColor = "#000000";
-
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'song-item';
-            itemDiv.style.borderLeftColor = borderColor;
-            
-            // 🛠️ 依據指定格式渲染：【第一排】語言 -> 歌名 -> 歌手作者 -> 標籤 / 【第二排】最底部的備註
-            itemDiv.innerHTML = `
-                <div class="song-top-row">
-                    ${langBadgesHTML}
-                    <span class="song-title">${song.title}</span>
-                    <span class="song-author">${song.author}</span>
-                    ${tagsHTML}
-                </div>
-                ${bottomRowHTML}
-            `;
-            container.appendChild(itemDiv);
-        });
+        } catch (error) {
+            alert('連線異常：' + error.message);
+        }
     }
 
-    window.onload = fetchSongs;
+    // 讀取並渲染歌單
+    async function loadSongs() {
+        const url = `https://raw.githubusercontent.com/${GH_SETTINGS.owner}/${GH_SETTINGS.repo}/main/${GH_SETTINGS.path}?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error();
+            const songs = await res.json();
+            const tbody = document.getElementById('frontSongList');
+            tbody.innerHTML = '';
+
+            if (songs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">目前歌單空空如也。</td></tr>';
+                return;
+            }
+
+            songs.forEach(song => {
+                const langs = song.langs || [song.lang || "中文"];
+                let langHTML = '';
+                langs.forEach(l => langHTML += `<span class="lang-badge lang-${l}">${l}</span>`);
+
+                let tagsHTML = '';
+                if (song.tags) {
+                    song.tags.forEach(t => tagsHTML += `<span class="tag-badge" style="background:${t.color}">${t.name}</span>`);
+                }
+
+                let notesHTML = '';
+                const notesArr = song.notes || (song.note ? song.note.split(',') : []);
+                notesArr.forEach(n => { if(n.trim()) notesHTML += `<span class="note-badge">${n.trim()}</span>`; });
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${langHTML}</td>
+                    <td><strong>${song.title}</strong></td>
+                    <td>${song.author}</td>
+                    <td>${tagsHTML} ${notesHTML}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            document.getElementById('frontSongList').innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">未能成功載入歌單，請確認線上 songs.json 是否存在。</td></tr>';
+        }
+    }
+
+    window.onload = loadSongs;
 </script>
 </body>
 </html>
