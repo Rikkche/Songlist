@@ -163,8 +163,135 @@
             "日文"
         ],
         "lang": "日文",
-        "title": "妄想感傷代償聯盟",
-        "author": "DECO*27",
+        "title": "PONPONPON",
+        "author": "きゃりーぱみゅぱみゅ",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "KICKBACK",
+        "author": "米津玄師",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "電影",
+                "color": "#8b5cf6"
+            },
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "打上花火",
+        "author": "米津玄師 x DAOKO",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "電影",
+                "color": "#8b5cf6"
+            },
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "Butter-Fly",
+        "author": "和田光司",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "YONA YONA DANCE",
+        "author": "和田アキ子",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "戀",
+        "author": "星野源",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "連續劇/影集",
+                "color": "#84cc16"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "Stellar Stellar",
+        "author": "星街すいせい",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "Ghost",
+        "author": "星街すいせい",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "ビビデバ",
+        "author": "星街すいせい",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "おちゃめ機能",
+        "author": "重音テト",
         "note": "",
         "notes": [],
         "tags": [
@@ -179,8 +306,35 @@
             "日文"
         ],
         "lang": "日文",
-        "title": "おじゃま虫",
-        "author": "DECO*27",
+        "title": "ギターと孤独と蒼い惑星",
+        "author": "結束バンド",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "動/漫畫",
+                "color": "#f97316"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "オトナブルー",
+        "author": "新しい学校のリーダー達",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "ラグトレイン",
+        "author": "稲葉曇",
         "note": "",
         "notes": [],
         "tags": [
@@ -195,8 +349,52 @@
             "日文"
         ],
         "lang": "日文",
-        "title": "アニマル",
-        "author": "DECO*27",
+        "title": "Pretender",
+        "author": "髭男dism",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "オドループ",
+        "author": "Frederic",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "NIGHT DANCER",
+        "author": "IMASE",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "可愛くてごめん",
+        "author": "HoneyWorks",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "King",
+        "author": "Kanaria",
         "note": "",
         "notes": [],
         "tags": [
@@ -211,8 +409,8 @@
             "日文"
         ],
         "lang": "日文",
-        "title": "ヴァンパイア",
-        "author": "DECO*27",
+        "title": "エンヴィーベイビー",
+        "author": "Kanaria",
         "note": "",
         "notes": [],
         "tags": [
@@ -227,8 +425,8 @@
             "日文"
         ],
         "lang": "日文",
-        "title": "ヒバナ",
-        "author": "DECO*27",
+        "title": "レクイエム",
+        "author": "Kanaria",
         "note": "",
         "notes": [],
         "tags": [
@@ -243,8 +441,8 @@
             "日文"
         ],
         "lang": "日文",
-        "title": "ゴーストルール",
-        "author": "DECO*27",
+        "title": "酔いどれ知らず",
+        "author": "Kanaria",
         "note": "",
         "notes": [],
         "tags": [
@@ -259,8 +457,8 @@
             "日文"
         ],
         "lang": "日文",
-        "title": "サラマンダー",
-        "author": "DECO*27",
+        "title": "Queen",
+        "author": "Kanaria",
         "note": "",
         "notes": [],
         "tags": [
@@ -275,8 +473,8 @@
             "日文"
         ],
         "lang": "日文",
-        "title": "デビルじゃないもん",
-        "author": "DECO*27",
+        "title": "Envy baby",
+        "author": "Kanaria",
         "note": "",
         "notes": [],
         "tags": [
@@ -285,5 +483,273 @@
                 "color": "#39C5BB"
             }
         ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "アイデンティティ",
+        "author": "Kanaria",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "flos",
+        "author": "R Sound Design",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "怪獣の花唄",
+        "author": "Vaundy",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "アイドル",
+        "author": "YOASOBI",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "ベノム",
+        "author": "かいりきベア",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "ダーリンダンス",
+        "author": "かいりきベア",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "ルマ",
+        "author": "かいりきベア",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "バグ",
+        "author": "かいりきベア",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "アンヘル",
+        "author": "かいりきベア",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "秒針を噛む",
+        "author": "ずっと真夜中でいいのに",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "彗星ハネムーン",
+        "author": "ナユタン星人",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "惑星ループ",
+        "author": "ナユタン星人",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "太陽系デスコ",
+        "author": "ナユタン星人",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "エイリアンエイリアン",
+        "author": "ナユタン星人",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "シャルル",
+        "author": "バルーン",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "日文"
+        ],
+        "lang": "日文",
+        "title": "少女レイ",
+        "author": "みきとP",
+        "note": "",
+        "notes": [],
+        "tags": [
+            {
+                "name": "Vocaloid",
+                "color": "#39C5BB"
+            }
+        ]
+    },
+    {
+        "langs": [
+            "中文"
+        ],
+        "lang": "中文",
+        "title": "我不願讓你一個人",
+        "author": "五月天",
+        "note": "",
+        "notes": [],
+        "tags": []
+    },
+    {
+        "langs": [
+            "中文"
+        ],
+        "lang": "中文",
+        "title": "你不是真正的快樂",
+        "author": "五月天",
+        "note": "",
+        "notes": [],
+        "tags": []
     }
 ]
