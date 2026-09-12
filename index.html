@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>小鳥歌單</title>
     <style>
+        /* 🎨 CSS 變數系統：支援淺色/深色主題無縫切換 */
         :root {
             --primary: #3a7bd5;
             --primary-hover: #2a66b8;
@@ -14,6 +15,29 @@
             --text-muted: #64748b;
             --text-light: #94a3b8;
             --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --btn-filter-bg: #f8fafc;
+            --btn-filter-text: #475569;
+            --note-bg: #f1f5f9;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.03);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        [data-theme="dark"] {
+            --primary: #4a8be5;
+            --primary-hover: #3a7bd5;
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-light: #cbd5e1;
+            --border-color: #334155;
+            --input-bg: #0f172a;
+            --btn-filter-bg: #334155;
+            --btn-filter-text: #cbd5e1;
+            --note-bg: #334155;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.25);
         }
 
         *, *::before, *::after {
@@ -28,6 +52,7 @@
             color: var(--text-main);
             display: flex;
             justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -37,19 +62,22 @@
             max-width: 1200px;
         }
 
+        /* 頂部 Header 與深色切換按鈕 */
         header {
+            position: relative;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             padding: 24px 20px;
             background: var(--bg-card);
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            border: 1px solid rgba(226, 232, 240, 0.6);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         header h1 {
             margin: 0 0 10px 0;
-            color: #0f172a;
+            color: var(--text-main);
             font-size: 28px;
             font-weight: 800;
             letter-spacing: -0.02em;
@@ -61,40 +89,90 @@
             font-size: 14px;
         }
 
-        /* 🔍 搜尋與篩選控制區 */
+        /* 深色模式切換按鈕 */
+        .theme-toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--btn-filter-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* 🔍 搜尋、排序與篩選控制區 */
         .control-panel {
             background: var(--bg-card);
             padding: 24px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            box-shadow: var(--shadow-md);
             margin-bottom: 25px;
             display: flex;
             flex-direction: column;
             gap: 16px;
-            border: 1px solid rgba(226, 232, 240, 0.6);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* 搜尋框與排序下拉選單組合列 */
+        .search-sort-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
         }
 
         .search-box {
+            flex: 1;
             position: relative;
-            display: flex;
-            width: 100%;
         }
 
         .search-input {
             width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #cbd5e1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
             transition: all 0.2s ease;
             color: var(--text-main);
-            background-color: #ffffff;
+            background-color: var(--input-bg);
         }
 
         .search-input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(58,123,213,0.12);
+            box-shadow: 0 0 0 4px rgba(58,123,213,0.15);
+        }
+
+        /* ↕️ 排序下拉選單 */
+        .sort-select {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            color: var(--text-main);
+            background-color: var(--input-bg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 150px;
+        }
+
+        .sort-select:focus {
+            border-color: var(--primary);
         }
 
         .filter-group {
@@ -107,7 +185,7 @@
         .filter-label {
             font-size: 14px;
             font-weight: 700;
-            color: #475569;
+            color: var(--text-muted);
             min-width: 70px;
         }
 
@@ -118,32 +196,31 @@
         }
 
         .btn-filter {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px 16px;
+            background: var(--btn-filter-bg);
+            border: 1px solid var(--border-color);
+            padding: 7px 15px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
-            color: #475569;
+            color: var(--btn-filter-text);
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             user-select: none;
         }
 
         .btn-filter:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-            color: #1e293b;
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         .btn-filter.active {
             background: var(--primary);
             color: #ffffff;
             border-color: var(--primary);
-            box-shadow: 0 2px 8px rgba(58,123,213,0.25);
+            box-shadow: 0 2px 8px rgba(58,123,213,0.3);
         }
 
-        /* 雙欄式 (兩排) 排版 */
+        /* 歌曲雙欄排版 */
         .song-list {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -154,26 +231,26 @@
             background: var(--bg-card);
             padding: 18px 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow-sm);
             display: flex;
             flex-direction: column;
             gap: 10px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
+            border: 1px solid var(--border-color);
             border-left: 5px solid #cbd5e1;
             word-break: break-word;
         }
 
         .song-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            box-shadow: var(--shadow-md);
         }
 
-        /* 第一排：語言、歌名、作者、標籤 */
+        /* 第一排：語言、歌名、作者、標籤、一鍵複製 */
         .song-top-row {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
@@ -184,14 +261,14 @@
             align-items: center;
         }
 
-        /* 🎨 語言小膠囊 */
+        /* 語言小膠囊 */
         .badge-lang {
-            padding: 4px 8px;
+            padding: 3px 7px;
             border-radius: 5px;
             font-size: 12px;
             font-weight: 800;
             color: #ffffff;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            text-shadow: 0 1px 1px rgba(0,0,0,0.15);
             white-space: nowrap;
         }
         .badge-lang.lang-中文 { background: #00bcd4; }
@@ -199,17 +276,15 @@
         .badge-lang.lang-英文 { background: #e91e63; }
         .badge-lang.lang-韓文 { background: #ff5722; }
         .badge-lang.lang-台語 { background: #1b5e20; }
-        .badge-lang.lang-其他 { background: #000000; }
+        .badge-lang.lang-其他 { background: #475569; }
 
-        /* 歌曲名稱 */
         .song-title {
             font-size: 16px;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--text-main);
             line-height: 1.4;
         }
 
-        /* 歌手作者 */
         .song-author {
             font-size: 13px;
             color: var(--text-muted);
@@ -217,9 +292,8 @@
             line-height: 1.4;
         }
 
-        /* 自訂標籤庫樣式 */
         .badge-custom-tag {
-            padding: 3px 8px;
+            padding: 3px 7px;
             border-radius: 4px;
             font-size: 11px;
             font-weight: 700;
@@ -227,18 +301,48 @@
             white-space: nowrap;
         }
 
-        /* 第二排：備註放在最下面 */
+        /* 📋 一鍵複製按鈕 */
+        .btn-copy {
+            margin-left: auto;
+            background: var(--btn-filter-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-copy:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--bg-card);
+        }
+
+        .btn-copy.copied {
+            background: #10b981 !important;
+            color: #ffffff !important;
+            border-color: #10b981 !important;
+        }
+
+        /* 第二排：備註欄 */
         .song-bottom-row {
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
             margin-top: 2px;
             padding-top: 8px;
-            border-top: 1px dashed #f1f5f9;
+            border-top: 1px dashed var(--border-color);
         }
 
         .badge-note {
-            background: #f1f5f9;
+            background: var(--note-bg);
             color: var(--text-light);
             padding: 2px 6px;
             border-radius: 4px;
@@ -257,20 +361,17 @@
             border: 1px dashed var(--border-color);
         }
 
-        /* 📱 手機板自動適應：螢幕寬度小於 768px 時切換為單排 */
+        /* 📱 手機版 RWD 適應 */
         @media (max-width: 768px) {
-            body {
-                padding: 12px;
-            }
-            .song-list {
-                grid-template-columns: 1fr;
-            }
-            .no-result {
-                grid-column: span 1;
-            }
-            .control-panel {
-                padding: 16px;
-            }
+            body { padding: 12px; }
+            header { padding: 20px 16px; }
+            .theme-toggle-btn { position: relative; top: 0; right: 0; margin: 0 auto 12px auto; width: fit-content; }
+            .search-sort-row { flex-direction: column; }
+            .sort-select { width: 100%; }
+            .song-list { grid-template-columns: 1fr; }
+            .no-result { grid-column: span 1; }
+            .control-panel { padding: 16px; }
+            .btn-copy { margin-left: 0; width: 100%; justify-content: center; margin-top: 4px; }
         }
     </style>
 </head>
@@ -278,13 +379,21 @@
 
 <div class="container">
     <header>
+        <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()">🌙 深色模式</button>
         <h1>🎵 小鳥歌單</h1>
         <p>目前總共開放 <span id="totalSongs" style="font-weight:bold; color:var(--primary);">0</span> 首歌曲，歡迎點播！</p>
     </header>
 
     <div class="control-panel">
-        <div class="search-box">
-            <input type="text" id="searchBar" class="search-input" placeholder="搜尋歌名、作者、標籤或備註..." oninput="performFilter()">
+        <div class="search-sort-row">
+            <div class="search-box">
+                <input type="text" id="searchBar" class="search-input" placeholder="搜尋歌名、作者、標籤或備註..." oninput="performFilter()">
+            </div>
+            <select id="sortSelect" class="sort-select" onchange="performFilter()">
+                <option value="default">預設排序</option>
+                <option value="author">按歌手排序 (A-Z)</option>
+                <option value="title">按歌名排序 (A-Z)</option>
+            </select>
         </div>
         
         <div class="filter-group" id="langGroup">
@@ -302,8 +411,7 @@
 
         <div class="filter-group" id="tagGroup" style="display: none;">
             <div class="filter-label">特色標籤</div>
-            <div class="filter-buttons" id="tagButtonsContainer">
-            </div>
+            <div class="filter-buttons" id="tagButtonsContainer"></div>
         </div>
     </div>
 
@@ -315,7 +423,7 @@
     let currentLang = "全部";
     let currentTag = "全部";
 
-    // 安全轉義 HTML 避免 XSS 及特殊字元錯亂
+    // 安全轉義 HTML 避免字元錯亂
     function escapeHtml(str) {
         if (!str) return '';
         return String(str)
@@ -326,6 +434,45 @@
             .replace(/'/g, "&#039;");
     }
 
+    // 🌙 主題切換邏輯 (LocalStorage 記憶設定)
+    function initTheme() {
+        const savedTheme = localStorage.getItem('bird_songlist_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeBtn(savedTheme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('bird_songlist_theme', newTheme);
+        updateThemeBtn(newTheme);
+    }
+
+    function updateThemeBtn(theme) {
+        const btn = document.getElementById('themeToggleBtn');
+        if (btn) {
+            btn.innerHTML = theme === 'dark' ? '☀️ 淺色模式' : '🌙 深色模式';
+        }
+    }
+
+    // 📋 一鍵複製歌名邏輯
+    function copySongInfo(title, author, btnElement) {
+        const textToCopy = `${title} - ${author}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = '✅ 已複製';
+            btnElement.classList.add('copied');
+            setTimeout(() => {
+                btnElement.innerHTML = originalHTML;
+                btnElement.classList.remove('copied');
+            }, 1500);
+        }).catch(err => {
+            console.error('複製失敗:', err);
+        });
+    }
+
+    // 讀取歌曲資料
     async function fetchSongs() {
         try {
             const response = await fetch('songs.json?t=' + new Date().getTime());
@@ -384,10 +531,12 @@
 
     function performFilter() {
         const keyword = document.getElementById('searchBar').value.toLowerCase().trim();
+        const sortType = document.getElementById('sortSelect').value;
         const container = document.getElementById('songsContainer');
         container.innerHTML = '';
 
-        const filtered = rawSongs.filter(song => {
+        // 1. 篩選
+        let filtered = rawSongs.filter(song => {
             const songLangs = song.langs || [song.lang || "中文"];
             const matchLang = (currentLang === "全部" || songLangs.includes(currentLang));
 
@@ -404,22 +553,30 @@
             return matchLang && matchTag && matchKeyword;
         });
 
+        // 2. ↕️ 排序處理
+        if (sortType === 'author') {
+            filtered.sort((a, b) => (a.author || '').localeCompare((b.author || ''), 'zh-Hant'));
+        } else if (sortType === 'title') {
+            filtered.sort((a, b) => (a.title || '').localeCompare((b.title || ''), 'zh-Hant'));
+        }
+
         if (filtered.length === 0) {
             container.innerHTML = `<div class="no-result">🔍 沒有找到符合條件的歌曲。</div>`;
             return;
         }
 
+        // 3. 渲染歌曲卡片
         filtered.forEach(song => {
             const songLangs = song.langs || [song.lang || "中文"];
             
-            // 1. 建立語言 HTML
+            // 語言膠囊
             let langBadgesHTML = '<div class="lang-badges">';
             songLangs.forEach(l => {
                 langBadgesHTML += `<span class="badge-lang lang-${escapeHtml(l)}">${escapeHtml(l)}</span>`;
             });
             langBadgesHTML += '</div>';
 
-            // 2. 建立特色標籤 HTML
+            // 特色標籤
             let tagsHTML = '<div class="tag-badges">';
             if (song.tags && Array.isArray(song.tags)) {
                 song.tags.forEach(t => {
@@ -428,7 +585,7 @@
             }
             tagsHTML += '</div>';
 
-            // 3. 建立最下方的備註 HTML
+            // 備註列
             let bottomRowHTML = '';
             const songNotes = song.notes || (song.note ? song.note.split(',').map(s => s.trim()).filter(Boolean) : []);
             if (songNotes.length > 0) {
@@ -439,14 +596,14 @@
                 bottomRowHTML += '</div>';
             }
 
-            // 設定卡片左邊條預設顏色
+            // 卡片邊框顏色
             let borderColor = "#cbd5e1";
             if (songLangs[0] === "中文") borderColor = "#00bcd4";
             if (songLangs[0] === "日文") borderColor = "#f1c40f";
             if (songLangs[0] === "英文") borderColor = "#e91e63";
             if (songLangs[0] === "韓文") borderColor = "#ff5722";
             if (songLangs[0] === "台語") borderColor = "#1b5e20";
-            if (songLangs[0] === "其他") borderColor = "#000000";
+            if (songLangs[0] === "其他") borderColor = "#475569";
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'song-item';
@@ -458,6 +615,7 @@
                     <span class="song-title">${escapeHtml(song.title)}</span>
                     <span class="song-author">${escapeHtml(song.author)}</span>
                     ${tagsHTML}
+                    <button class="btn-copy" onclick="copySongInfo('${escapeHtml(song.title)}', '${escapeHtml(song.author)}', this)">📋 複製</button>
                 </div>
                 ${bottomRowHTML}
             `;
@@ -465,7 +623,11 @@
         });
     }
 
-    window.onload = fetchSongs;
+    // 頁面初始化
+    window.onload = () => {
+        initTheme();
+        fetchSongs();
+    };
 </script>
 </body>
 </html>
