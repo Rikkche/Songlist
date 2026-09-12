@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生物歌單後台管理系統</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.08);
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            background-color: var(--bg-main); 
+            margin: 0; 
+            padding: 40px 20px; 
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .container { 
+            max-width: 1280px; 
+            margin: 0 auto; 
+            background: var(--card-bg); 
+            padding: 40px; 
+            border-radius: var(--radius-lg); 
+            box-shadow: var(--shadow-lg); 
+            border: 1px solid var(--border-color);
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--text-main); 
+            margin: 0 0 18px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .form-group { margin-bottom: 22px; }
+        label.group-label { display: block; margin-bottom: 8px; font-weight: 700; color: #334155; font-size: 14px; }
+        
+        input[type="text"], select.table-select { 
+            width: 100%; 
+            padding: 10px 14px; 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius-sm); 
+            box-sizing: border-box; 
+            font-size: 14px; 
+            outline: none; 
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+        input[type="text"]:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); 
+        }
+
+        /* --- 膠囊選擇面板 --- */
+        .selection-panel { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            background: #f1f5f9; 
+            padding: 14px; 
+            border-radius: var(--radius-md); 
+            border: 1px solid var(--border-color); 
+        }
+        
+        .selectable-capsule { cursor: pointer; user-select: none; }
+        .selectable-capsule input { display: none; }
+        
+        .capsule-content {
+            display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; 
+            border-radius: 50px; font-size: 13px; font-weight: 700; color: var(--text-muted);
+            background: #ffffff; border: 1.5px solid var(--border-color); transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        .selectable-capsule:hover .capsule-content { border-color: #94a3b8; color: var(--text-main); transform: translateY(-1px); }
+
+        /* 語言膠囊顏色 */
+        .selectable-capsule input:checked + .capsule-content.lang-中文, .table-lang-btn.active.lang-中文 { background: #00bcd4; border-color: #008ba3; color: #fff; }
+        .selectable-capsule input:checked + .capsule-content.lang-日文, .table-lang-btn.active.lang-日文 { background: #f1c40f; border-color: #d4ac0d; color: #000; }
+        .selectable-capsule input:checked + .capsule-content.lang-英文, .table-lang-btn.active.lang-英文 { background: #e91e63; border-color: #b0124a; color: #fff; }
+        .selectable-capsule input:checked + .capsule-content.lang-韓文, .table-lang-btn.active.lang-韓文 { background: #ff5722; border-color: #e64a19; color: #fff; }
+        .selectable-capsule input:checked + .capsule-content.lang-台語, .table-lang-btn.active.lang-台語 { background: #1b5e20; border-color: #0f3612; color: #fff; }
+        .selectable-capsule input:checked + .capsule-content.lang-其他, .table-lang-btn.active.lang-其他 { background: #000000; border-color: #000000; color: #fff; }
+
+        .selectable-capsule.tag-active .capsule-content { color: #fff; }
+
+        .tag-tool { display: flex; gap: 8px; margin-bottom: 12px; }
+        .btn-tag-del { margin-left: 6px; opacity: 0.6; font-weight: normal; border: none; background: none; color: inherit; cursor: pointer; }
+        .btn-tag-del:hover { opacity: 1; }
+
+        /* 表格內語言複選 */
+        .table-lang-container { display: flex; gap: 4px; flex-wrap: wrap; max-width: 170px; }
+        .table-lang-btn {
+            background: #fff; border: 1px solid var(--border-color); color: var(--text-muted); padding: 3px 8px;
+            border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.15s ease;
+        }
+        .table-lang-btn:hover { border-color: #94a3b8; color: var(--text-main); }
+
+        /* 快捷多選膠囊 */
+        .quick-note-container { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+        .quick-note-btn {
+            background: #e2e8f0; border: none; color: #475569; padding: 4px 10px;
+            border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+        }
+        .quick-note-btn:hover { background: #cbd5e1; color: #0f172a; }
+        .quick-note-btn.active { background: #f59e0b; color: #fff; }
+        
+        .table-note-container { display: flex; flex-direction: column; gap: 6px; }
+        .table-note-tags { display: flex; flex-wrap: wrap; gap: 4px; min-height: 18px; }
+        .note-badge { background: #64748b; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+
+        /* 搜尋與篩選面板 */
+        .filter-box {
+            background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md);
+            padding: 16px; margin-top: 15px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .filter-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .search-input { flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 14px; outline: none; }
+        .search-input:focus { border-color: var(--primary); }
+        
+        .filter-btn {
+            background: #fff; border: 1px solid var(--border-color); padding: 5px 14px; border-radius: 20px;
+            font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s;
+        }
+        .filter-btn:hover { background: #f1f5f9; }
+        .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* 按鈕系統 */
+        .btn-group { display: flex; gap: 12px; margin-top: 24px; }
+        button.main-btn { 
+            padding: 12px 20px; border: none; border-radius: var(--radius-md); cursor: pointer; 
+            font-size: 15px; font-weight: 700; transition: all 0.2s ease; box-shadow: var(--shadow-sm);
+        }
+        .btn-add { background: var(--primary); color: #fff; flex: 2; }
+        .btn-add:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .btn-edit-mode { background: #10b981; color: #fff; flex: 2; }
+        .btn-edit-mode:hover { background: #059669; }
+        .btn-copy { background: #0f172a; color: #fff; flex: 1; }
+        .btn-copy:hover { background: #1e293b; }
+
+        /* 表格優化 */
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-top: 15px; }
+        .song-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .song-table th, .song-table td { padding: 14px 12px; border-bottom: 1px solid var(--border-color); font-size: 14px; vertical-align: middle; }
+        .song-table th { background: #f8fafc; color: #475569; font-weight: 700; border-bottom: 2px solid var(--border-color); }
+        .song-table tbody tr:hover { background-color: #f8fafc; }
+        
+        .badge-warning { background-color: #ef4444; color: white; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+
+        .btn-action { background: #f1f5f9; color: #475569; padding: 6px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.15s; }
+        .btn-action:hover { background: #e2e8f0; color: var(--text-main); }
+        .btn-del-action { color: #ef4444; background: #fef2f2; border-color: #fecaca; }
+        .btn-del-action:hover { background: #fee2e2; }
+
+        .table-tags-container { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; min-height: 5px; }
+        .table-tag-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: #fff; }
+        .table-tag-remove { border: none; background: none; color: rgba(255,255,255,0.8); cursor: pointer; padding: 0; font-size: 11px; }
+
+        .excel-import-box { background: #f8fafc; border: 2px dashed #cbd5e1; padding: 20px; border-radius: var(--radius-md); }
+        .textarea-batch { width: 100%; height: 90px; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 12px; resize: vertical; box-sizing: border-box; }
+        .json-box { background: #0f172a; color: #38bdf8; padding: 18px; border-radius: var(--radius-md); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; white-space: pre-wrap; margin-top: 15px; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">🎵 生物歌單後台管理系統</div>
+    
+    <!-- 匯入區 -->
+    <div class="section-card">
+        <div class="section-title">📊 從 Excel / 試算表批量匯入</div>
+        <div class="excel-import-box">
+            <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--text-muted);">
+                💡 <b>操作說明：</b>請調整下方選單的欄位順序，確保與複製的 Excel 欄位完全對應。
+            </p>
+            <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                <select id="col1"><option value="title" selected>第一欄：歌名</option><option value="author">第一欄：作者</option><option value="langs">第一欄：語言</option><option value="note">第一欄：備註</option><option value="skip">第一欄：忽略</option></select>
+                <select id="col2"><option value="author" selected>第二欄：作者</option><option value="title">第二欄：歌名</option><option value="langs">第二欄：語言</option><option value="note">第二欄：備註</option><option value="skip">第二欄：忽略</option></select>
+                <select id="col3"><option value="langs">第三欄：語言</option><option value="title">第三欄：歌名</option><option value="author">第三欄：作者</option><option value="note">第三欄：備註</option><option value="skip" selected>第三欄：忽略</option></select>
+                <select id="col4"><option value="note">第四欄：備註</option><option value="title">第四欄：歌名</option><option value="author">第四欄：作者</option><option value="langs">第四欄：語言</option><option value="skip" selected>第四欄：忽略</option></select>
+                <label style="font-size:13px; align-self:center;"><input type="checkbox" id="hasHeader" checked> 忽略標頭列</label>
+            </div>
+            <textarea id="batchInput" class="textarea-batch" placeholder="貼上從 Excel 複製的資料表格範圍..."></textarea>
+            <button class="btn-action" style="background:var(--primary); color:white; border:none; padding:10px 20px; font-size:13px;" onclick="importFromExcel()">⚡ 解析並匯入數據</button>
+        </div>
+    </div>
+
+    <!-- 編輯區 -->
+    <div class="section-card">
+        <div class="section-title" id="formTitle">✏️ 個別歌曲新增 / 編輯</div>
+        
+        <div class="form-group">
+            <label class="group-label">選擇語言 (可多選)</label>
+            <div class="selection-panel">
+                <label class="selectable-capsule"><input type="checkbox" name="langCheckbox" value="中文"><span class="capsule-content lang-中文">中文</span></label>
+                <label class="selectable-capsule"><input type="checkbox" name="langCheckbox" value="日文"><span class="capsule-content lang-日文">日文</span></label>
+                <label class="selectable-capsule"><input type="checkbox" name="langCheckbox" value="英文"><span class="capsule-content lang-英文">英文</span></label>
+                <label class="selectable-capsule"><input type="checkbox" name="langCheckbox" value="韓文"><span class="capsule-content lang-韓文">韓文</span></label>
+                <label class="selectable-capsule"><input type="checkbox" name="langCheckbox" value="台語"><span class="capsule-content lang-台語">台語</span></label>
+                <label class="selectable-capsule"><input type="checkbox" name="langCheckbox" value="其他"><span class="capsule-content lang-其他">其他</span></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="group-label">自訂標籤庫</label>
+            <div class="tag-tool">
+                <input type="text" id="newTagName" placeholder="標籤名稱，例如：原創曲" style="width:220px;">
+                <input type="color" id="newTagColor" value="#3b82f6" style="width:45px; height:38px; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">
+                <button class="btn-action" onclick="createNewTag()">新增標籤</button>
+            </div>
+            <div id="tagPool" class="selection-panel"></div>
+        </div>
+
+        <div class="form-group">
+            <label class="group-label">歌曲詳細資訊</label>
+            <input type="text" id="title" placeholder="歌曲名稱 (必填)" style="margin-bottom:10px;">
+            <input type="text" id="author" placeholder="原唱 / 作者 (必填)" style="margin-bottom:10px;">
+            <input type="text" id="note" placeholder="額外備註說明">
+            <div class="quick-note-container" id="formNoteContainer"></div>
+        </div>
+
+        <div class="btn-group">
+            <button id="submitBtn" class="main-btn btn-add" onclick="handleSubmit()">新增歌曲</button>
+            <button class="main-btn btn-copy" onclick="copyJSON()">📋 複製 JSON 代碼</button>
+        </div>
+    </div>
+
+    <!-- 表格區 -->
+    <div class="section-card">
+        <div class="section-title">📂 歌曲資料庫 (<span id="songCount">0</span> 首)</div>
+        
+        <div class="filter-box">
+            <div class="filter-row">
+                <span style="font-size:13px; font-weight:700; color:var(--text-muted);">🔍 快速檢索：</span>
+                <input type="text" id="tableSearch" class="search-input" placeholder="輸入關鍵字（歌名、作者、標籤或備註）..." oninput="filterSongs()">
+            </div>
+            <div class="filter-row" id="filterLanguageRow">
+                <span style="font-size:13px; color:var(--text-muted);">語言：</span>
+                <button class="filter-btn active" id="filter-lang-all" onclick="setLangFilter('全部')">全部</button>
+                <button class="filter-btn" id="filter-lang-中文" onclick="setLangFilter('中文')">中文</button>
+                <button class="filter-btn" id="filter-lang-日文" onclick="setLangFilter('日文')">日文</button>
+                <button class="filter-btn" id="filter-lang-英文" onclick="setLangFilter('英文')">英文</button>
+                <button class="filter-btn" id="filter-lang-韓文" onclick="setLangFilter('韓文')">韓文</button>
+                <button class="filter-btn" id="filter-lang-台語" onclick="setLangFilter('台語')">台語</button>
+                <button class="filter-btn" id="filter-lang-其他" onclick="setLangFilter('其他')">其他</button>
+            </div>
+            <div class="filter-row">
+                <span style="font-size:13px; color:var(--text-muted);">標籤：</span>
+                <div id="filterTagContainer" style="display:inline-flex; gap:6px; flex-wrap:wrap;"></div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="song-table">
+                <thead>
+                    <tr>
+                        <th style="width: 16%">語言標註</th>
+                        <th style="width: 22%">歌名</th>
+                        <th style="width: 16%">作者</th>
+                        <th style="width: 20%">自訂標籤</th>
+                        <th style="width: 18%">快捷備註</th>
+                        <th style="width: 8%">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="adminSongList"></tbody>
+            </table>
+        </div>
+
+        <div class="json-box" id="jsonOutput">[]</div>
+    </div>
+
+    <!-- 同步區 -->
+    <div class="section-card">
+        <div class="section-title">🔄 同步現有資料</div>
+        <textarea id="importInput" style="width:100%; height:60px; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); box-sizing:border-box;" placeholder="貼上現有的 songs.json 內容..."></textarea>
+        <button class="btn-action" style="margin-top:10px; background:var(--primary); color:white; border:none;" onclick="importJSON()">載入舊數據</button>
+    </div>
+</div>
+
+<script>
+    let songList = JSON.parse(localStorage.getItem('mySongs')) || [];
+    let tagDatabase = JSON.parse(localStorage.getItem('myTagDatabase')) || [
+        { name: "Vocaloid", color: "#39C5BB" },
+        { name: "動/漫畫", color: "#f97316" }, 
+        { name: "電影", color: "#8b5cf6" },    
+        { name: "連續劇/影集", color: "#84cc16" } 
+    ];
+    
+    let editIndex = -1;
+    let currentLangFilter = "全部";
+    let currentTagFilter = "全部";
+
+    const allLanguages = ["中文", "日文", "英文", "韓文", "台語", "其他"];
+    const commonNotes = ['練習中', '高難度', '封印中', 'Key+', 'Key-'];
+    let formSelectedNotes = [];
+
+    function renderTagPool() {
+        const pool = document.getElementById('tagPool');
+        pool.innerHTML = '';
+        tagDatabase.forEach((tag, idx) => {
+            const label = document.createElement('label');
+            label.className = 'selectable-capsule';
+            label.innerHTML = `
+                <input type="checkbox" name="tagCheckbox" value="${tag.name}" data-color="${tag.color}" onchange="updateTagUI(this)">
+                <span class="capsule-content" style="--tag-color: ${tag.color}">
+                    ${tag.name}
+                    <button class="btn-tag-del" onclick="deleteTagFromDB(${idx}, event)">×</button>
+                </span>
+            `;
+            pool.appendChild(label);
+        });
+        localStorage.setItem('myTagDatabase', JSON.stringify(tagDatabase));
+        renderFilterTagButtons();
+    }
+
+    function updateTagUI(checkbox) {
+        const span = checkbox.nextElementSibling;
+        const color = checkbox.getAttribute('data-color');
+        if (checkbox.checked) {
+            span.style.backgroundColor = color; span.style.borderColor = color; span.style.color = "#fff";
+            checkbox.parentElement.classList.add('tag-active');
+        } else {
+            span.style.backgroundColor = "#fff"; span.style.borderColor = "#cbd5e1"; span.style.color = "#64748b";
+            checkbox.parentElement.classList.remove('tag-active');
+        }
+    }
+
+    function createNewTag() {
+        const name = document.getElementById('newTagName').value.trim();
+        const color = document.getElementById('newTagColor').value;
+        if(!name) return;
+        if(tagDatabase.some(t => t.name === name)) { alert('標籤已存在'); return; }
+        tagDatabase.push({ name, color });
+        document.getElementById('newTagName').value = '';
+        renderTagPool();
+        renderAdminSongs();
+    }
+
+    function deleteTagFromDB(index, event) {
+        event.preventDefault(); event.stopPropagation();
+        tagDatabase.splice(index, 1);
+        renderTagPool();
+        renderAdminSongs();
+    }
+
+    function renderFilterTagButtons() {
+        const container = document.getElementById('filterTagContainer');
+        let html = `<button class="filter-btn ${currentTagFilter === '全部' ? 'active' : ''}" onclick="setTagFilter('全部')">全部</button>`;
+        tagDatabase.forEach(t => {
+            html += `<button class="filter-btn ${currentTagFilter === t.name ? 'active' : ''}" onclick="setTagFilter('${t.name}')">${t.name}</button>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function setLangFilter(lang) {
+        currentLangFilter = lang;
+        document.querySelectorAll('#filterLanguageRow .filter-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`filter-lang-${lang === '全部' ? 'all' : lang}`).classList.add('active');
+        filterSongs();
+    }
+
+    function setTagFilter(tagName) {
+        currentTagFilter = tagName;
+        renderFilterTagButtons();
+        filterSongs();
+    }
+
+    function filterSongs() {
+        const searchKeyword = document.getElementById('tableSearch').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#adminSongList tr');
+
+        rows.forEach(row => {
+            const songIdx = parseInt(row.getAttribute('data-index'));
+            const song = songList[songIdx];
+            if (!song) return;
+
+            const songLangs = song.langs || [song.lang || "中文"];
+            const matchLang = (currentLangFilter === "全部" || songLangs.includes(currentLangFilter));
+
+            const songTags = song.tags || [];
+            const matchTag = (currentTagFilter === "全部" || songTags.some(t => t.name === currentTagFilter));
+
+            const notesString = Array.isArray(song.notes) ? song.notes.join(' ') : (song.note || '');
+            const matchText = (!searchKeyword || 
+                song.title.toLowerCase().includes(searchKeyword) || 
+                song.author.toLowerCase().includes(searchKeyword) || 
+                notesString.toLowerCase().includes(searchKeyword)
+            );
+
+            row.style.display = (matchLang && matchTag && matchText) ? "" : "none";
+        });
+    }
+
+    function renderFormNotes() {
+        const container = document.getElementById('formNoteContainer');
+        container.innerHTML = `<span style="font-size:12px; color:var(--text-muted); align-self:center; margin-right:4px;">💡 快捷備註：</span>`;
+        commonNotes.forEach(cn => {
+            const isActive = formSelectedNotes.includes(cn) ? 'active' : '';
+            container.innerHTML += `<button type="button" class="quick-note-btn ${isActive}" onclick="toggleFormNote('${cn}')">${cn}</button>`;
+        });
+        container.innerHTML += `<button type="button" class="quick-note-btn" style="background:#fee2e2; color:#ef4444;" onclick="clearFormNotes()">重置</button>`;
+    }
+
+    function toggleFormNote(noteText) {
+        const idx = formSelectedNotes.indexOf(noteText);
+        if (idx > -1) formSelectedNotes.splice(idx, 1);
+        else formSelectedNotes.push(noteText);
+        renderFormNotes();
+    }
+
+    function clearFormNotes() {
+        formSelectedNotes = [];
+        document.getElementById('note').value = '';
+        renderFormNotes();
+    }
+
+    function toggleTableLang(songIdx, langName) {
+        if (!songList[songIdx].langs || !Array.isArray(songList[songIdx].langs)) {
+            songList[songIdx].langs = songList[songIdx].lang ? [songList[songIdx].lang] : ["中文"];
+        }
+        
+        let arr = songList[songIdx].langs;
+        const idx = arr.indexOf(langName);
+        if (idx > -1) {
+            if(arr.length > 1) arr.splice(idx, 1);
+        } else {
+            arr.push(langName);
+        }
+        
+        songList[songIdx].lang = arr[0] || "中文";
+        renderAdminSongs();
+    }
+
+    function toggleTableNote(songIdx, noteText) {
+        if (!songList[songIdx].notes || !Array.isArray(songList[songIdx].notes)) {
+            songList[songIdx].notes = songList[songIdx].note ? songList[songIdx].note.split(',').map(s => s.trim()).filter(Boolean) : [];
+        }
+        
+        const arr = songList[songIdx].notes;
+        const idx = arr.indexOf(noteText);
+        if (idx > -1) arr.splice(idx, 1);
+        else arr.push(noteText);
+        
+        songList[songIdx].note = arr.join(', ');
+        renderAdminSongs();
+    }
+
+    function clearTableNotes(songIdx) {
+        songList[songIdx].notes = [];
+        songList[songIdx].note = '';
+        renderAdminSongs();
+    }
+
+    function renderAdminSongs() {
+        const tbody = document.getElementById('adminSongList');
+        tbody.innerHTML = '';
+        
+        const titleCounts = {};
+        songList.forEach(s => {
+            if (s.title) {
+                const normalizedTitle = s.title.trim().toLowerCase();
+                titleCounts[normalizedTitle] = (titleCounts[normalizedTitle] || 0) + 1;
+            }
+        });
+
+        songList.forEach((song, index) => {
+            if (!song.langs || !Array.isArray(song.langs)) {
+                song.langs = song.lang ? [song.lang] : ["中文"];
+            }
+            
+            let tableLangHTML = '<div class="table-lang-container">';
+            allLanguages.forEach(l => {
+                const isActive = song.langs.includes(l) ? 'active' : '';
+                tableLangHTML += `<button class="table-lang-btn ${isActive} lang-${l}" onclick="toggleTableLang(${index}, '${l}')">${l}</button>`;
+            });
+            tableLangHTML += '</div>';
+
+            let duplicateWarning = "";
+            if (song.title && titleCounts[song.title.trim().toLowerCase()] > 1) {
+                duplicateWarning = ` <span class="badge-warning" title="發現相同曲目">⚠️ 重複</span>`;
+            }
+
+            let tableTagsHTML = '<div class="table-tags-container">';
+            if (song.tags && Array.isArray(song.tags)) {
+                song.tags.forEach((t, tIdx) => {
+                    tableTagsHTML += `
+                        <span class="table-tag-badge" style="background-color:${t.color}">
+                            ${t.name}
+                            <button class="table-tag-remove" onclick="quickRemoveTag(${index}, ${tIdx})" title="移除">×</button>
+                        </span>
+                    `;
+                });
+            }
+            tableTagsHTML += '</div>';
+
+            const unselectedTags = tagDatabase.filter(dbTag => 
+                !((song.tags || []).some(t => t.name === dbTag.name))
+            );
+            
+            let tagSelectOptions = '<option value="" selected disabled>+ 貼標籤...</option>';
+            unselectedTags.forEach(t => {
+                tagSelectOptions += `<option value="${t.name}">${t.name}</option>`;
+            });
+            const tagSelectHTML = `
+                ${tableTagsHTML}
+                <select class="table-select" onchange="quickAddTag(${index}, this)">${tagSelectOptions}</select>
+            `;
+
+            if (!song.notes) {
+                song.notes = song.note ? song.note.split(',').map(s => s.trim()).filter(Boolean) : [];
+            }
+            
+            let noteBadgesHTML = '<div class="table-note-tags">';
+            if (song.notes.length > 0) {
+                song.notes.forEach(n => {
+                    noteBadgesHTML += `<span class="note-badge">${n}</span>`;
+                });
+            } else {
+                noteBadgesHTML += `<span style="color:#cbd5e1; font-size:12px;">(無)</span>`;
+            }
+            noteBadgesHTML += '</div>';
+            
+            let tableNoteButtonsHTML = '<div class="quick-note-container">';
+            commonNotes.forEach(cn => {
+                const isActive = song.notes.includes(cn) ? 'active' : '';
+                tableNoteButtonsHTML += `<button class="quick-note-btn ${isActive}" style="font-size:10px; padding:2px 6px;" onclick="toggleTableNote(${index}, '${cn}')">${cn}</button>`;
+            });
+            if(song.notes.length > 0) {
+                tableNoteButtonsHTML += `<button class="quick-note-btn" style="font-size:10px; padding:2px 6px; background:#fee2e2; color:#ef4444;" onclick="clearTableNotes(${index})">重置</button>`;
+            }
+            tableNoteButtonsHTML += '</div>';
+
+            const tableNoteColumnHTML = `
+                <div class="table-note-container">
+                    ${noteBadgesHTML}
+                    ${tableNoteButtonsHTML}
+                </div>
+            `;
+
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-index', index);
+            tr.innerHTML = `
+                <td>${tableLangHTML}</td>
+                <td><strong>${song.title}</strong>${duplicateWarning}</td>
+                <td>${song.author || ''}</td>
+                <td>${tagSelectHTML}</td>
+                <td>${tableNoteColumnHTML}</td>
+                <td>
+                    <button class="btn-action" onclick="startEdit(${index})">編輯</button>
+                    <button class="btn-action btn-del-action" onclick="deleteSong(${index})">刪除</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('songCount').innerText = songList.length;
+        document.getElementById('jsonOutput').innerText = JSON.stringify(songList, null, 4);
+        localStorage.setItem('mySongs', JSON.stringify(songList));
+        
+        filterSongs();
+    }
+
+    function quickAddTag(songIdx, selectElement) {
+        const tagName = selectElement.value;
+        if (!tagName) return;
+        const targetTag = tagDatabase.find(t => t.name === tagName);
+        if (targetTag) {
+            if (!songList[songIdx].tags) songList[songIdx].tags = [];
+            songList[songIdx].tags.push({ name: targetTag.name, color: targetTag.color });
+            renderAdminSongs();
+        }
+    }
+
+    function quickRemoveTag(songIdx, tagIdx) {
+        songList[songIdx].tags.splice(tagIdx, 1);
+        renderAdminSongs();
+    }
+
+    function handleSubmit() {
+        const title = document.getElementById('title').value.trim();
+        const author = document.getElementById('author').value.trim();
+        const textNote = document.getElementById('note').value.trim();
+        if (!title || !author) { alert('請填寫歌名與作者！'); return; }
+
+        let selectedLangs = Array.from(document.querySelectorAll('input[name="langCheckbox"]:checked')).map(cb => cb.value);
+        if(selectedLangs.length === 0) { selectedLangs = ["中文"]; }
+
+        const selectedTags = Array.from(document.querySelectorAll('input[name="tagCheckbox"]:checked')).map(cb => ({
+            name: cb.value, color: cb.getAttribute('data-color')
+        }));
+
+        let finalNotes = [...formSelectedNotes];
+        if (textNote && !finalNotes.includes(textNote)) {
+            finalNotes.push(textNote);
+        }
+
+        const songData = { 
+            langs: selectedLangs, 
+            lang: selectedLangs[0], 
+            title, 
+            author, 
+            note: finalNotes.join(', '), 
+            notes: finalNotes,
+            tags: selectedTags 
+        };
+
+        if (editIndex === -1) songList.push(songData);
+        else { songList[editIndex] = songData; exitEditMode(); }
+
+        resetForm();
+        renderAdminSongs();
+    }
+
+    function startEdit(index) {
+        editIndex = index;
+        const song = songList[index];
+        document.getElementById('title').value = song.title;
+        document.getElementById('author').value = song.author;
+
+        if (!song.notes) {
+            song.notes = song.note ? song.note.split(',').map(s => s.trim()).filter(Boolean) : [];
+        }
+        formSelectedNotes = [...song.notes];
+        
+        const customNotes = formSelectedNotes.filter(n => !commonNotes.includes(n));
+        document.getElementById('note').value = customNotes.join(', ');
+        renderFormNotes();
+
+        const langs = Array.isArray(song.langs) ? song.langs : [song.lang || "中文"];
+        document.querySelectorAll('input[name="langCheckbox"]').forEach(cb => {
+            cb.checked = langs.includes(cb.value);
+        });
+
+        const currentTagNames = (song.tags || []).map(t => t.name);
+        document.querySelectorAll('input[name="tagCheckbox"]').forEach(cb => {
+            cb.checked = currentTagNames.includes(cb.value);
+            updateTagUI(cb);
+        });
+
+        document.getElementById('formTitle').innerText = `✏️ 編輯中：${song.title}`;
+        document.getElementById('submitBtn').innerText = "💾 更新歌曲資訊";
+        document.getElementById('submitBtn').className = "main-btn btn-edit-mode";
+        window.scrollTo({ top: document.getElementById('formTitle').offsetTop - 20, behavior: 'smooth' });
+    }
+
+    function exitEditMode() {
+        editIndex = -1;
+        document.getElementById('formTitle').innerText = "✏️ 個別歌曲新增 / 編輯";
+        document.getElementById('submitBtn').innerText = "新增歌曲";
+        document.getElementById('submitBtn').className = "main-btn btn-add";
+    }
+
+    function resetForm() {
+        document.getElementById('title').value = '';
+        document.getElementById('author').value = '';
+        document.getElementById('note').value = '';
+        formSelectedNotes = [];
+        renderFormNotes();
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+            if(cb.name === 'tagCheckbox') updateTagUI(cb);
+        });
+    }
+
+    function deleteSong(index) {
+        if(confirm('確定要刪除此歌曲嗎？')) { songList.splice(index, 1); renderAdminSongs(); }
+    }
+
+    function importFromExcel() {
+        const rawText = document.getElementById('batchInput').value;
+        if (!rawText.trim()) { alert('請輸入資料！'); return; }
+
+        const mapping = [
+            document.getElementById('col1').value, 
+            document.getElementById('col2').value, 
+            document.getElementById('col3').value, 
+            document.getElementById('col4').value
+        ];
+        
+        const lines = rawText.split(/\r?\n/);
+        let count = 0;
+
+        lines.forEach((line, i) => {
+            if (!line.trim() || (i === 0 && document.getElementById('hasHeader').checked)) return;
+            const cells = line.split('\t');
+            let item = { langs: ["中文"], lang: "中文", title: "", author: "", note: "", notes: [], tags: [] };
+            let rawLangText = "";
+
+            cells.forEach((cell, idx) => {
+                const field = mapping[idx];
+                if (!field || field === 'skip' || cell === undefined) return;
+
+                if (field === 'langs') { 
+                    rawLangText = cell.trim().toLowerCase(); 
+                } else { 
+                    item[field] = cell.trim(); 
+                }
+            });
+
+            if (item.note) {
+                item.notes = item.note.split(',').map(s => s.trim()).filter(Boolean);
+            }
+
+            if (rawLangText) {
+                let parsedLangs = [];
+                if (rawLangText.includes("中") || rawLangText.includes("zh")) parsedLangs.push("中文");
+                if (rawLangText.includes("日") || rawLangText.includes("ja") || rawLangText.includes("jp")) parsedLangs.push("日文");
+                if (rawLangText.includes("英") || rawLangText.includes("en")) parsedLangs.push("英文");
+                if (rawLangText.includes("韓") || rawLangText.includes("kr") || rawLangText.includes("kor")) parsedLangs.push("韓文");
+                if (rawLangText.includes("台") || rawLangText.includes("tw")) parsedLangs.push("台語");
+                if (rawLangText.includes("其")) parsedLangs.push("其他");
+                
+                if (parsedLangs.length > 0) item.langs = parsedLangs;
+            }
+            item.lang = item.langs[0];
+
+            if (item.title && item.author) { 
+                songList.push(item); 
+                count++;
+            }
+        });
+
+        if (count > 0) {
+            alert(`成功匯入 ${count} 首歌曲！`);
+            renderAdminSongs();
+            document.getElementById('batchInput').value = '';
+        } else {
+            alert('匯入失敗，請檢查欄位順序對應！');
+        }
+    }
+
+    function copyJSON() {
+        navigator.clipboard.writeText(document.getElementById('jsonOutput').innerText).then(() => alert('JSON 代碼已複製到剪貼簿！'));
+    }
+
+    function importJSON() {
+        try {
+            const val = document.getElementById('importInput').value.trim();
+            if(!val) return;
+            songList = JSON.parse(val);
+            renderAdminSongs();
+            alert('歌單載入成功！');
+            document.getElementById('importInput').value = '';
+        } catch(e) { alert('JSON 格式不正確！'); }
+    }
+
+    window.onload = function() { 
+        renderTagPool(); 
+        renderFormNotes();
+        renderAdminSongs(); 
+    };
+</script>
+</body>
+</html>
