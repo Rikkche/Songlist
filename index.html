@@ -62,17 +62,81 @@
             max-width: 1200px;
         }
 
-        /* 頂部 Header 與深色切換按鈕 */
+        /* 頂部 Header 與固定兩側按鈕 */
         header {
             position: relative;
             text-align: center;
             margin-bottom: 25px;
-            padding: 24px 20px;
+            padding: 28px 20px;
             background: var(--bg-card);
             border-radius: 16px;
             box-shadow: var(--shadow-md);
             border: 1px solid var(--border-color);
             transition: background-color 0.3s, border-color 0.3s;
+            min-height: 120px;
+        }
+
+        /* 📍 Header 左中區塊（包含吉祥物圖片與社群連結） */
+        .header-left {
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* 🐥 小鳥吉祥物：像素清晰化 + 自行飄浮動畫 */
+        .header-avatar {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            image-rendering: pixelated; /* 保持像素風格清晰不模糊 */
+            animation: float 3s ease-in-out infinite;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .header-avatar:hover {
+            animation-play-state: paused;
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        /* 🎈 飄浮 keyframes 動畫 */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* 📍 社群圖示超連結 */
+        .social-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .social-icon {
+            color: var(--text-muted);
+            transition: transform 0.2s ease, color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .social-icon.twitch:hover {
+            color: #9146ff;
+            transform: scale(1.18);
+        }
+
+        .social-icon.youtube:hover {
+            color: #ff0000;
+            transform: scale(1.18);
         }
 
         header h1 {
@@ -89,11 +153,12 @@
             font-size: 14px;
         }
 
-        /* 深色模式切換按鈕 */
+        /* 📍 深色模式切換按鈕：固定在 Header 最右側垂直居中 */
         .theme-toggle-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
             background: var(--btn-filter-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
@@ -382,7 +447,7 @@
             border: 1px dashed var(--border-color);
         }
 
-        /* 💡 許願 Modal 彈出視窗 (支援深淺色主題) */
+        /* 💡 許願 Modal 彈出視窗 */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -474,7 +539,8 @@
         @media (max-width: 768px) {
             body { padding: 12px; }
             header { padding: 20px 16px; }
-            .theme-toggle-btn { position: relative; top: 0; right: 0; margin: 0 auto 12px auto; width: fit-content; }
+            .header-left { position: relative; top: 0; left: 0; transform: none; justify-content: center; margin-bottom: 12px; }
+            .theme-toggle-btn { position: relative; top: 0; right: 0; transform: none; margin: 0 auto 12px auto; width: fit-content; }
             .search-sort-row { flex-direction: column; }
             .sort-select, .btn-wish-trigger { width: 100%; }
             .song-list { grid-template-columns: 1fr; }
@@ -488,7 +554,24 @@
 
 <div class="container">
     <header>
+        <!-- 📍 左中區塊：小鳥飄浮圖示 + 社群連結 -->
+        <div class="header-left">
+            <img src="export202209170956548140.png" alt="小鳥吉祥物" class="header-avatar">
+            
+            <div class="social-links">
+                <a href="https://www.twitch.tv/girai3" target="_blank" rel="noopener noreferrer" title="Twitch 直播間" class="social-icon twitch">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+                </a>
+                <a href="https://www.youtube.com/@girai3" target="_blank" rel="noopener noreferrer" title="YouTube 頻道" class="social-icon youtube">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 深色模式按鈕 (右側垂直居中) -->
         <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()">🌙 深色模式</button>
+
+        <!-- 置中大標題 -->
         <h1>🎵 小鳥歌單</h1>
         <p>目前總共開放 <span id="totalSongs" style="font-weight:bold; color:var(--primary);">0</span> 首歌曲，歡迎點播！</p>
     </header>
