@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生物的點歌歌單</title>
+    <title>小鳥歌單</title>
     <style>
         :root {
             --primary: #3a7bd5;
@@ -12,8 +12,12 @@
             --bg-card: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --text-light: #94a3b8; /* 更淺的字體顏色 */
+            --text-light: #94a3b8;
             --border-color: #e2e8f0;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
         body {
@@ -24,6 +28,8 @@
             color: var(--text-main);
             display: flex;
             justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
@@ -34,10 +40,11 @@
         header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
+            padding: 24px 20px;
             background: var(--bg-card);
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid rgba(226, 232, 240, 0.6);
         }
 
         header h1 {
@@ -45,6 +52,7 @@
             color: #0f172a;
             font-size: 28px;
             font-weight: 800;
+            letter-spacing: -0.02em;
         }
 
         header p {
@@ -63,6 +71,7 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.6);
         }
 
         .search-box {
@@ -78,13 +87,14 @@
             border-radius: 10px;
             font-size: 16px;
             outline: none;
-            transition: all 0.2s;
-            box-sizing: border-box;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+            background-color: #ffffff;
         }
 
         .search-input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(58,123,213,0.1);
+            box-shadow: 0 0 0 4px rgba(58,123,213,0.12);
         }
 
         .filter-group {
@@ -116,24 +126,27 @@
             font-weight: 600;
             color: #475569;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
         }
 
         .btn-filter:hover {
             background: #f1f5f9;
             border-color: #cbd5e1;
+            color: #1e293b;
         }
 
         .btn-filter.active {
             background: var(--primary);
             color: #ffffff;
             border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(58,123,213,0.25);
         }
 
-        /* 🛠️ 核心更動：改為雙欄式 (兩排) 排版 */
+        /* 雙欄式 (兩排) 排版 */
         .song-list {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 寬螢幕時平分成左右兩排 */
+            grid-template-columns: repeat(2, 1fr);
             gap: 16px;
         }
 
@@ -143,16 +156,17 @@
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
             display: flex;
-            flex-direction: column; /* 改為上下排列，方便塞備註到最下方 */
+            flex-direction: column;
             gap: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            border: 1px solid #e2e8f0;
             border-left: 5px solid #cbd5e1;
-            box-sizing: border-box;
+            word-break: break-word;
         }
 
         .song-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
         }
 
         /* 第一排：語言、歌名、作者、標籤 */
@@ -160,7 +174,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap; /* 避免極端情況塞不下擠壓變形 */
+            flex-wrap: wrap;
         }
 
         .lang-badges, .tag-badges {
@@ -181,7 +195,7 @@
             white-space: nowrap;
         }
         .badge-lang.lang-中文 { background: #00bcd4; }
-        .badge-lang.lang-日文 { background: #f1c40f; color: #000; text-shadow: none; }
+        .badge-lang.lang-日文 { background: #f1c40f; color: #000000; text-shadow: none; }
         .badge-lang.lang-英文 { background: #e91e63; }
         .badge-lang.lang-韓文 { background: #ff5722; }
         .badge-lang.lang-台語 { background: #1b5e20; }
@@ -192,13 +206,15 @@
             font-size: 16px;
             font-weight: 700;
             color: #0f172a;
+            line-height: 1.4;
         }
 
-        /* 🛠️ 歌手作者：調整為較小、較淺 */
+        /* 歌手作者 */
         .song-author {
             font-size: 13px;
             color: var(--text-muted);
             font-weight: 500;
+            line-height: 1.4;
         }
 
         /* 自訂標籤庫樣式 */
@@ -211,42 +227,49 @@
             white-space: nowrap;
         }
 
-        /* 🛠️ 第二排：備註放在最下面，且字體最小、最淺 */
+        /* 第二排：備註放在最下面 */
         .song-bottom-row {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             flex-wrap: wrap;
             margin-top: 2px;
-            padding-top: 6px;
-            border-top: 1px dashed #f1f5f9; /* 加上淡淡的虛線分隔線，讓排版更精緻 */
+            padding-top: 8px;
+            border-top: 1px dashed #f1f5f9;
         }
 
         .badge-note {
-            background: #f1f5f9; /* 備註底色改為更淡的淺灰 */
-            color: var(--text-light); /* 💡 使用最淺的字體顏色 */
+            background: #f1f5f9;
+            color: var(--text-light);
             padding: 2px 6px;
             border-radius: 4px;
-            font-size: 11px; /* 💡 使用最小的字體 */
+            font-size: 11px;
             font-weight: 600;
         }
 
         .no-result {
-            grid-column: span 2; /* 查無結果時，要橫跨兩排 */
+            grid-column: span 2;
             text-align: center;
             padding: 40px;
             background: var(--bg-card);
             border-radius: 12px;
             color: var(--text-muted);
             font-size: 15px;
+            border: 1px dashed var(--border-color);
         }
 
-        /* 📱 手機板自動適應：當螢幕寬度小於 768px 時，自動回復成單排 */
+        /* 📱 手機板自動適應：螢幕寬度小於 768px 時切換為單排 */
         @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
             .song-list {
                 grid-template-columns: 1fr;
             }
             .no-result {
                 grid-column: span 1;
+            }
+            .control-panel {
+                padding: 16px;
             }
         }
     </style>
@@ -255,7 +278,7 @@
 
 <div class="container">
     <header>
-        <h1>🎵 生物的點歌歌單</h1>
+        <h1>🎵 小鳥歌單</h1>
         <p>目前總共開放 <span id="totalSongs" style="font-weight:bold; color:var(--primary);">0</span> 首歌曲，歡迎點播！</p>
     </header>
 
@@ -280,7 +303,7 @@
         <div class="filter-group" id="tagGroup" style="display: none;">
             <div class="filter-label">特色標籤</div>
             <div class="filter-buttons" id="tagButtonsContainer">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -291,6 +314,17 @@
     let rawSongs = [];
     let currentLang = "全部";
     let currentTag = "全部";
+
+    // 安全轉義 HTML 避免 XSS 及特殊字元錯亂
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 
     async function fetchSongs() {
         try {
@@ -329,7 +363,7 @@
         tagGroupEl.style.display = "flex";
         let html = `<button class="btn-filter active" onclick="filterByTag('全部', this)">全部</button>`;
         tagNames.forEach(name => {
-            html += `<button class="btn-filter" onclick="filterByTag('${name}', this)">${name}</button>`;
+            html += `<button class="btn-filter" onclick="filterByTag('${escapeHtml(name)}', this)">${escapeHtml(name)}</button>`;
         });
         container.innerHTML = html;
     }
@@ -362,8 +396,8 @@
 
             const notesString = Array.isArray(song.notes) ? song.notes.join(' ') : (song.note || '');
             const matchKeyword = (!keyword ||
-                song.title.toLowerCase().includes(keyword) ||
-                song.author.toLowerCase().includes(keyword) ||
+                (song.title && song.title.toLowerCase().includes(keyword)) ||
+                (song.author && song.author.toLowerCase().includes(keyword)) ||
                 notesString.toLowerCase().includes(keyword)
             );
 
@@ -381,7 +415,7 @@
             // 1. 建立語言 HTML
             let langBadgesHTML = '<div class="lang-badges">';
             songLangs.forEach(l => {
-                langBadgesHTML += `<span class="badge-lang lang-${l}">${l}</span>`;
+                langBadgesHTML += `<span class="badge-lang lang-${escapeHtml(l)}">${escapeHtml(l)}</span>`;
             });
             langBadgesHTML += '</div>';
 
@@ -389,7 +423,7 @@
             let tagsHTML = '<div class="tag-badges">';
             if (song.tags && Array.isArray(song.tags)) {
                 song.tags.forEach(t => {
-                    tagsHTML += `<span class="badge-custom-tag" style="background-color: ${t.color}">${t.name}</span>`;
+                    tagsHTML += `<span class="badge-custom-tag" style="background-color: ${escapeHtml(t.color)}">${escapeHtml(t.name)}</span>`;
                 });
             }
             tagsHTML += '</div>';
@@ -400,7 +434,7 @@
             if (songNotes.length > 0) {
                 bottomRowHTML += '<div class="song-bottom-row">';
                 songNotes.forEach(n => {
-                    bottomRowHTML += `<span class="badge-note"># ${n}</span>`;
+                    bottomRowHTML += `<span class="badge-note"># ${escapeHtml(n)}</span>`;
                 });
                 bottomRowHTML += '</div>';
             }
@@ -418,12 +452,11 @@
             itemDiv.className = 'song-item';
             itemDiv.style.borderLeftColor = borderColor;
             
-            // 🛠️ 依據指定格式渲染：【第一排】語言 -> 歌名 -> 歌手作者 -> 標籤 / 【第二排】最底部的備註
             itemDiv.innerHTML = `
                 <div class="song-top-row">
                     ${langBadgesHTML}
-                    <span class="song-title">${song.title}</span>
-                    <span class="song-author">${song.author}</span>
+                    <span class="song-title">${escapeHtml(song.title)}</span>
+                    <span class="song-author">${escapeHtml(song.author)}</span>
                     ${tagsHTML}
                 </div>
                 ${bottomRowHTML}
