@@ -1,0 +1,77 @@
+CREATE TABLE "songs" (
+	"id" serial PRIMARY KEY,
+	"title" text NOT NULL,
+	"author" text NOT NULL,
+	"langs" jsonb DEFAULT '["中文"]' NOT NULL,
+	"notes" jsonb DEFAULT '[]' NOT NULL,
+	"tags" jsonb DEFAULT '[]' NOT NULL,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "tags" (
+	"id" serial PRIMARY KEY,
+	"name" text NOT NULL UNIQUE,
+	"color" text NOT NULL
+);
+--> statement-breakpoint
+INSERT INTO "tags" ("name", "color") VALUES
+  ('Vocaloid', '#39C5BB'),
+  ('動/漫畫', '#f97316'),
+  ('電影', '#8b5cf6'),
+  ('連續劇/影集', '#84cc16')
+ON CONFLICT ("name") DO NOTHING;
+--> statement-breakpoint
+INSERT INTO "songs" ("title", "author", "langs", "notes", "tags") VALUES
+  ('Lemon', '米津玄師', '["日文"]', '[]', '[{"name":"連續劇/影集","color":"#84cc16"}]'),
+  ('私は最強', 'Ado', '["日文"]', '["Mrs.Green Apple","高難度"]', '[{"name":"電影","color":"#8b5cf6"},{"name":"動/漫畫","color":"#f97316"}]'),
+  ('逆光', 'Ado', '["日文"]', '["Vaundy","高難度"]', '[{"name":"電影","color":"#8b5cf6"},{"name":"動/漫畫","color":"#f97316"}]'),
+  ('RAIN', 'SEKAI NO OWARI', '["日文"]', '[]', '[{"name":"動/漫畫","color":"#f97316"},{"name":"電影","color":"#8b5cf6"}]'),
+  ('フォニイ', 'ツミキ (可不)', '["日文"]', '["Vocaloid"]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('Cups', 'Anna Kendrick', '["英文"]', '["歌喉讚/Pitch Perfect"]', '[{"name":"電影","color":"#8b5cf6"}]'),
+  ('太陽與地球', '黃俊榮', '["中文"]', '["大家都聽盧廣仲的我們尊重一下原創"]', '[]'),
+  ('愛情恰恰', '陳小雲', '["台語"]', '[]', '[]'),
+  ('七彩的微風', '真珠美人魚', '["中文","日文"]', '["Legend of Mermaid"]', '[{"name":"動/漫畫","color":"#f97316"}]'),
+  ('PONPONPON', 'きゃりーぱみゅぱみゅ', '["日文"]', '[]', '[]'),
+  ('KICKBACK', '米津玄師', '["日文"]', '[]', '[{"name":"電影","color":"#8b5cf6"},{"name":"動/漫畫","color":"#f97316"}]'),
+  ('打上花火', '米津玄師 x DAOKO', '["日文"]', '[]', '[{"name":"電影","color":"#8b5cf6"},{"name":"動/漫畫","color":"#f97316"}]'),
+  ('Butter-Fly', '和田光司', '["日文"]', '[]', '[{"name":"動/漫畫","color":"#f97316"}]'),
+  ('YONA YONA DANCE', '和田アキ子', '["日文"]', '[]', '[]'),
+  ('戀', '星野源', '["日文"]', '[]', '[{"name":"連續劇/影集","color":"#84cc16"}]'),
+  ('Stellar Stellar', '星街すいせい', '["日文"]', '[]', '[]'),
+  ('Ghost', '星街すいせい', '["日文"]', '[]', '[]'),
+  ('ビビデバ', '星街すいせい', '["日文"]', '[]', '[]'),
+  ('おちゃめ機能', '重音テト', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('ギターと孤独と蒼い惑星', '結束バンド', '["日文"]', '[]', '[{"name":"動/漫畫","color":"#f97316"}]'),
+  ('オトナブルー', '新しい学校のリーダー達', '["日文"]', '[]', '[]'),
+  ('ラグトレイン', '稲葉曇', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('Pretender', '髭男dism', '["日文"]', '[]', '[]'),
+  ('オドループ', 'Frederic', '["日文"]', '[]', '[]'),
+  ('NIGHT DANCER', 'IMASE', '["日文"]', '[]', '[]'),
+  ('可愛くてごめん', 'HoneyWorks', '["日文"]', '[]', '[]'),
+  ('King', 'Kanaria', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('エンヴィーベイビー', 'Kanaria', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('レクイエム', 'Kanaria', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('酔いどれ知らず', 'Kanaria', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('Queen', 'Kanaria', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('Envy baby', 'Kanaria', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('アイデンティティ', 'Kanaria', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('flos', 'R Sound Design', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('怪獣の花唄', 'Vaundy', '["日文"]', '[]', '[]'),
+  ('アイドル', 'YOASOBI', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('ベノム', 'かいりきベア', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('ダーリンダンス', 'かいりきベア', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('ルマ', 'かいりきベア', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('バグ', 'かいりきベア', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('アンヘル', 'かいりきベア', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('秒針を噛む', 'ずっと真夜中でいいのに', '["日文"]', '[]', '[]'),
+  ('彗星ハネムーン', 'ナユタン星人', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('惑星ループ', 'ナユタン星人', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('太陽系デスコ', 'ナユタン星人', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('エイリアンエイリアン', 'ナユタン星人', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('シャルル', 'バルーン', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('少女レイ', 'みきとP', '["日文"]', '[]', '[{"name":"Vocaloid","color":"#39C5BB"}]'),
+  ('我不願讓你一個人', '五月天', '["中文"]', '[]', '[]'),
+  ('你不是真正的快樂', '五月天', '["中文"]', '[]', '[]'),
+  ('下雨天', '南拳媽媽', '["中文"]', '[]', '[]'),
+  ('挪威的森林', '伍佰', '["中文"]', '[]', '[]'),
+  ('童話', '光良', '["中文"]', '[]', '[]');

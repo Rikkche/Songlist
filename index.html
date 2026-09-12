@@ -294,8 +294,8 @@
 
     async function fetchSongs() {
         try {
-            const response = await fetch('songs.json?t=' + new Date().getTime());
-            if (!response.ok) throw new Error('無法讀取 songs.json');
+            const response = await fetch('/api/songs');
+            if (!response.ok) throw new Error('無法讀取歌曲資料');
             rawSongs = await response.json();
             
             document.getElementById('totalSongs').innerText = rawSongs.length;
@@ -304,7 +304,7 @@
         } catch (error) {
             console.error(error);
             document.getElementById('songsContainer').innerHTML = `
-                <div class="no-result">❌ 歌單載入失敗，請確認同目錄下是否有 songs.json 檔案。</div>
+                <div class="no-result">❌ 歌單載入失敗，請稍後再試。</div>
             `;
         }
     }
