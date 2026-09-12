@@ -113,7 +113,7 @@
             color: var(--primary);
         }
 
-        /* 🔍 搜尋、排序與篩選控制區 */
+        /* 🔍 搜尋、排序與許願控制區 */
         .control-panel {
             background: var(--bg-card);
             padding: 24px;
@@ -127,11 +127,12 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        /* 搜尋框與排序下拉選單組合列 */
+        /* 搜尋框、排序與許願按鈕組合列 */
         .search-sort-row {
             display: flex;
             gap: 12px;
             width: 100%;
+            align-items: center;
         }
 
         .search-box {
@@ -173,6 +174,26 @@
 
         .sort-select:focus {
             border-color: var(--primary);
+        }
+
+        /* 💡 許願按鈕觸發器 */
+        .btn-wish-trigger {
+            background: #8b5cf6;
+            border: 1px solid #8b5cf6;
+            color: #ffffff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+        }
+
+        .btn-wish-trigger:hover {
+            background: #7c3aed;
+            border-color: #7c3aed;
         }
 
         .filter-group {
@@ -361,13 +382,101 @@
             border: 1px dashed var(--border-color);
         }
 
+        /* 💡 許願 Modal 彈出視窗 (支援深淺色主題) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            padding: 28px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .modal-card h3 {
+            margin: 0 0 16px 0;
+            color: var(--text-main);
+            font-size: 20px;
+        }
+
+        .modal-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+            outline: none;
+            background-color: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .modal-input:focus {
+            border-color: #8b5cf6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .btn-cancel {
+            padding: 8px 18px;
+            background: var(--btn-filter-bg);
+            color: var(--btn-filter-text);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-wish-submit {
+            background: #8b5cf6;
+            color: #ffffff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-wish-submit:hover {
+            background: #7c3aed;
+        }
+
         /* 📱 手機版 RWD 適應 */
         @media (max-width: 768px) {
             body { padding: 12px; }
             header { padding: 20px 16px; }
             .theme-toggle-btn { position: relative; top: 0; right: 0; margin: 0 auto 12px auto; width: fit-content; }
             .search-sort-row { flex-direction: column; }
-            .sort-select { width: 100%; }
+            .sort-select, .btn-wish-trigger { width: 100%; }
             .song-list { grid-template-columns: 1fr; }
             .no-result { grid-column: span 1; }
             .control-panel { padding: 16px; }
@@ -394,6 +503,7 @@
                 <option value="author">按歌手排序 (A-Z)</option>
                 <option value="title">按歌名排序 (A-Z)</option>
             </select>
+            <button class="btn-wish-trigger" onclick="openWishModal()">💡 許願點歌</button>
         </div>
         
         <div class="filter-group" id="langGroup">
@@ -418,7 +528,34 @@
     <div id="songsContainer" class="song-list"></div>
 </div>
 
+<!-- 💡 許願 Modal 視窗 -->
+<div id="wishModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3>💡 許願歌曲</h3>
+        
+        <label class="modal-label">歌曲名稱 *</label>
+        <input type="text" id="wishTitle" class="modal-input" placeholder="例如：Lemon">
+        
+        <label class="modal-label">歌手 / 原唱 *</label>
+        <input type="text" id="wishAuthor" class="modal-input" placeholder="例如：米津玄師">
+        
+        <label class="modal-label">許願原因 / 想說的話 (選填)</label>
+        <textarea id="wishNote" class="modal-input" placeholder="希望能聽到你唱這首！" style="height:75px; resize:none;"></textarea>
+        
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeWishModal()">取消</button>
+            <button class="btn-wish-submit" onclick="submitWishToGoogleForm()">送出許願</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    // Google 表單提交資訊
+    const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeb5QI_Q5epjitcohVXg7uN2g7bV1MOY7hbCvy_ZGH7f2H2dA/formResponse";
+    const ENTRY_TITLE = "entry.743383619";   // 歌名
+    const ENTRY_AUTHOR = "entry.453378873";  // 歌手
+    const ENTRY_NOTE = "entry.1730424253";    // 備註
+
     let rawSongs = [];
     let currentLang = "全部";
     let currentTag = "全部";
@@ -470,6 +607,49 @@
         }).catch(err => {
             console.error('複製失敗:', err);
         });
+    }
+
+    // 💡 開啟 / 關閉 Modal
+    function openWishModal() {
+        document.getElementById('wishModal').style.display = 'flex';
+    }
+
+    function closeWishModal() {
+        document.getElementById('wishModal').style.display = 'none';
+    }
+
+    // 💡 送出許願至 Google 表單
+    async function submitWishToGoogleForm() {
+        const title = document.getElementById('wishTitle').value.trim();
+        const author = document.getElementById('wishAuthor').value.trim();
+        const note = document.getElementById('wishNote').value.trim();
+
+        if (!title || !author) {
+            alert('請填寫歌名與歌手名稱喔！');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append(ENTRY_TITLE, title);
+        formData.append(ENTRY_AUTHOR, author);
+        formData.append(ENTRY_NOTE, note);
+
+        try {
+            await fetch(GOOGLE_FORM_ACTION_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: formData
+            });
+
+            alert('🎉 許願成功！歌曲已傳送到許願池囉！');
+            document.getElementById('wishTitle').value = '';
+            document.getElementById('wishAuthor').value = '';
+            document.getElementById('wishNote').value = '';
+            closeWishModal();
+        } catch (err) {
+            console.error('送出失敗:', err);
+            alert('❌ 許願失敗，請稍後再試。');
+        }
     }
 
     // 讀取歌曲資料
